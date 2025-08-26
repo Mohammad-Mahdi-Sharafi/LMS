@@ -31,17 +31,7 @@ function Header() {
                   دوره ها
                 </a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link active" href="#">
-                  مدرسان
-                </a>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link active" to="/about">
-                  درباره ما
-                </Link>
-              </li>
-              <li className="nav-item dropdown active">
+<li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
                   href="#"
@@ -49,7 +39,48 @@ function Header() {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  کاربر
+                  مدرس
+                </a>
+                <ul className="dropdown-menu">
+                  <li>
+                    <Link className="dropdown-item" to="/teacher-login">
+                      ورود
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/teacher-register">
+                      ثبت نام
+                    </Link>
+                  </li>
+                  <li>
+                    <hr className="dropdown-divider" />
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/teacher-dashboard">
+                      داشبورد
+                    </Link>
+                  </li>
+                  <li>
+                    <Link className="dropdown-item" to="/teacher-login">
+                      خروج
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link active" to="/about">
+                  درباره ما
+                </Link>
+              </li>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  دانشجو
                 </a>
                 <ul className="dropdown-menu">
                   <li>
@@ -71,7 +102,7 @@ function Header() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to="/user-login">
                       خروج
                     </Link>
                   </li>
