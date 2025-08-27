@@ -27,11 +27,11 @@ function Header() {
                 </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link active" href="#">
+                <Link className="nav-link active" to="/all-courses">
                   دوره ها
-                </a>
+                </Link>
               </li>
-<li className="nav-item dropdown">
+              <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle"
                   href="#"

@@ -4,7 +4,14 @@ function Sidebar() {
   return (
     <>
       <div className="card">
-        <h5 className="card-header">داشبورد</h5>
+        <h5 className="card-header">
+          <Link
+            className="list-group-item list-group-item-action"
+            to="/user-dashboard"
+          >
+            داشبورد
+          </Link>
+        </h5>
         <div className="list-group">
           <Link
             className="list-group-item list-group-item-action"
@@ -36,7 +43,10 @@ function Sidebar() {
           >
             تغییر رمز عبور
           </Link>
-          <Link className="list-group-item list-group-item-action" to="/user-login">
+          <Link
+            className="list-group-item list-group-item-action"
+            to="/user-login"
+          >
             خروج
           </Link>
         </div>

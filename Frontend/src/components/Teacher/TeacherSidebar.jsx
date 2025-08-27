@@ -4,39 +4,46 @@ function TeacherSidebar() {
   return (
     <>
       <div className="card">
-        <h5 className="card-header">داشبورد</h5>
+        <h5 className="card-header">
+                      <Link
+            className="list-group-item list-group-item-action"
+            to="/teacher-dashboard"
+          >
+            داشبورد
+          </Link>
+        </h5>
         <div className="list-group">
           <Link
             className="list-group-item list-group-item-action"
-            to="/my-courses"
+            to="/teacher-my-courses"
           >
             دوره های من
           </Link>
           <Link
             className="list-group-item list-group-item-action"
-            to="/favorite-courses"
+            to="/teacher-add-courses"
           >
-            دوره های محبوب
+            اضافه کردن دوره
           </Link>
           <Link
             className="list-group-item list-group-item-action"
-            to="/recommended-courses"
+            to="/teacher-my-courses"
           >
-            دوره های پیشنهادی
+            دانشجویان من
           </Link>
           <Link
             className="list-group-item list-group-item-action"
-            to="/profile-settings"
+            to="/teacher-profile-settings"
           >
             تنظیمات
           </Link>
           <Link
             className="list-group-item list-group-item-action"
-            to="/change-password"
+            to="/teacher-change-password"
           >
             تغییر رمز عبور
           </Link>
-          <Link className="list-group-item list-group-item-action" to="/user-login">
+          <Link className="list-group-item list-group-item-action" to="/teacher-login">
             خروج
           </Link>
         </div>

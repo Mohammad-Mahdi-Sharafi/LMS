@@ -1,4 +1,8 @@
+import {useEffect} from "react";
+
+const baseUrl = "http://127.0.0.1:8000/api"
 function TeacherLogin() {
+
     return (
         <>
             <div className="container mt-4">

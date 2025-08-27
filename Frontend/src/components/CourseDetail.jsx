@@ -20,7 +20,7 @@ function CourseDetail() {
           </p>
           <p className="fw-bold">
             <b>
-              مدرس دوره <Link to="#">مدرس 1</Link>
+              مدرس دوره : <Link to="/teacher-detail/1">مدرس 1</Link>
             </b>
           </p>
           <p className="fw-bold">
@@ -43,57 +43,107 @@ function CourseDetail() {
         <ul className="list-group list-group-flush">
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button
+                className="btn btn-sm btn-dark float-start"
+                data-bs-toggle="modal"
+                data-bs-target="#videoModal"
+              >
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
+            {/* video modal start */}
+            <div
+              className="modal fade"
+              id="videoModal"
+              tabIndex="-1"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-xl">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">
+                      مقدمه
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="ratio ratio-16x9">
+                      <iframe
+                        src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0"
+                        title="YouTube video"
+                        allowfullscreen
+                      ></iframe>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button type="button" className="btn btn-primary">
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* video modal end */}
           </li>
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button className="btn btn-sm btn-dark float-start">
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
           </li>
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button className="btn btn-sm btn-dark float-start">
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
           </li>
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button className="btn btn-sm btn-dark float-start">
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
           </li>
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button className="btn btn-sm btn-dark float-start">
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
           </li>
           <li className="list-group-item">
             مقدمه
-              <span className="float-start">
-                  <span className="ms-2">1 ساعت 30 دقیقه</span>
-                <button className="btn btn-sm btn-dark float-start">
+            <span className="float-start">
+              <span className="ms-2">1 ساعت 30 دقیقه</span>
+              <button className="btn btn-sm btn-dark float-start">
                 <i className="bi-play"></i>
-                </button>
-              </span>
+              </button>
+            </span>
           </li>
         </ul>
       </div>

@@ -1,14 +1,18 @@
 import {Link} from "react-router-dom";
+import {useEffect} from "react";
 
 function Home() {
+    useEffect(() => {
+        document.title = "LMS | Home Page"
+    })
   return (
     <>
         <div className="container mt-4">
             <h3 className="pb-1 mb-4">
                 جدید ترین دوره ها
-                <a href="#" className="float-start">
+                <Link to="all-courses" className="float-start">
                     ادامه
-                </a>
+                </Link>
             </h3>
             {/* latest courses */}
             <div className="row mb-4">
@@ -65,9 +69,9 @@ function Home() {
             {/* popular courses */}
             <h3 className="pb-1 mb-4 mt-5">
                 محبوب ترین دوره ها
-                <a href="#" className="float-start">
+                <Link to="/popular-courses" className="float-start">
                     ادامه
-                </a>
+                </Link>
             </h3>
             <div className="row mb-4">
                 <div className="col-md-3">
@@ -123,9 +127,9 @@ function Home() {
             {/* Popular teachers */}
             <h3 className="pb-1 mb-4 mt-5">
                 مدرسان برتر
-                <a href="#" className="float-start">
+                <Link to="/popular-teachers" className="float-start">
                     ادامه
-                </a>
+                </Link>
             </h3>
             <div className="row mb-4">
                 <div className="col-md-3">
