@@ -1,20 +1,22 @@
 import TeacherSidebar from "./TeacherSidebar.jsx";
+import {useEffect} from "react";
 
-
-function TeacherDashboard () {
+function TeacherDashboard() {
+    useEffect(() => {
+        document.title = "Teacher Dashboard";
+    }, []);
     return (
         <>
             <div className="container mt-4">
                 <div className="row">
                     <aside className="col-md-3">
-                        <TeacherSidebar />
+                        <TeacherSidebar/>
                     </aside>
-                    <section className="col-md-9">
-                    </section>
+                    <section className="col-md-9"></section>
                 </div>
             </div>
         </>
-    )
+    );
 }
 
-export default TeacherDashboard
+export default TeacherDashboard;

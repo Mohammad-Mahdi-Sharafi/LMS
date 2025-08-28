@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from main.models import Teacher, Student, CourseCategory, Course
+from main.models import Teacher, Chapter, CourseCategory, Course
 
 
 class TeacherSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Teacher
         fields = [
@@ -15,3 +14,38 @@ class TeacherSerializer(serializers.ModelSerializer):
             "phone_number",
         ]
 
+
+class CourseCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseCategory
+        fields = [
+            "id",
+            "title",
+            "description"
+        ]
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = [
+            "id",
+            "category",
+            "teacher",
+            "title",
+            "description",
+            "featured_image",
+            "technologies"
+        ]
+
+class ChapterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Chapter
+        fields = [
+            "id",
+            "course",
+            "title",
+            "description",
+            "video",
+            "remarks",
+        ]

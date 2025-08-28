@@ -1,5 +1,5 @@
 function About() {
-    return(
+    return (
         <h2>درباره ما</h2>
     )
 }

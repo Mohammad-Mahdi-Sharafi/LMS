@@ -13,6 +13,10 @@ class Teacher(models.Model):
     class Meta:
         verbose_name_plural = "1. Teachers"
 
+    def __str__(self):
+        return self.full_name
+
+
 # Course category field
 class CourseCategory(models.Model):
     title = models.CharField(max_length=100)
@@ -21,15 +25,39 @@ class CourseCategory(models.Model):
     class Meta:
         verbose_name_plural = "2. Course Categories"
 
+    def __str__(self):
+        return self.title
+
+
 # Course
 class Course(models.Model):
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField()
+    featured_image = models.ImageField(upload_to="course_imgs/", null=True)
+    technologies = models.TextField(null=True)
 
     class Meta:
         verbose_name_plural = "3. Courses"
+
+    def __str__(self):
+        return self.title
+
+#Chapter
+class Chapter(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    video = models.FileField(upload_to="chapter_videos/", null=True)
+    remarks = models.TextField(null=True)
+
+    class Meta:
+        verbose_name_plural = "4. Chapters"
+
+    def __str__(self):
+        return self.title
 
 # Student
 class Student(models.Model):
@@ -42,4 +70,7 @@ class Student(models.Model):
     interested_categories = models.TextField()
 
     class Meta:
-        verbose_name_plural = "4. Students"
+        verbose_name_plural = "5. Students"
+
+
+

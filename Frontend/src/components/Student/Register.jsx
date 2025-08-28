@@ -1,5 +1,5 @@
-function Register(){
-   return (
+function Register() {
+    return (
         <>
             <div className="container mt-4">
                 <div className="row">

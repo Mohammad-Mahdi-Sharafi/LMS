@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 
-const baseUrl = "http://127.0.0.1:8000/api"
+const baseUrl = "http://127.0.0.1:8000/api";
 
 function TeacherRegister() {
     const [teacherData, setTeacherData] = useState({
@@ -26,7 +26,7 @@ function TeacherRegister() {
         document.title = "Teacher Register";
     }, []); // Run only once
 
-  //submit form
+    //submit form
     const submitForm = (event) => {
         const teacherFormData = new FormData();
         teacherFormData.append("full_name", teacherData.full_name);
@@ -37,22 +37,27 @@ function TeacherRegister() {
         teacherFormData.append("skills", teacherData.skills);
 
         try {
-            axios.post(baseUrl + "/teacher", teacherFormData, {
-                headers : {
-                    Authorization : "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                }
-            })
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((error) => {  // <-- handle axios errors here
-                console.log(error);
-            });
+            axios
+                .post(baseUrl + "/teacher", teacherFormData, {
+                    headers: {
+                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    },
+                })
+                .then((response) => {
+                    console.log(response.data);
+                })
+                .catch((error) => {
+                    // <-- handle axios errors here
+                    console.log(error);
+                });
         } catch (error) {
             console.log(error);
         }
     };
-
+    const teacherLoginStatus = localStorage.getItem("teacherLoginStatus");
+    if (teacherLoginStatus === "true") {
+        window.location.href = "/teacher-dashboard";
+    }
 
     // end
 
@@ -65,7 +70,9 @@ function TeacherRegister() {
                         <div className="card-body">
                             <form>
                                 <div className="mb-3">
-                                    <label htmlFor="full_name" className="form-label">نام و نام خانوادگی</label>
+                                    <label htmlFor="full_name" className="form-label">
+                                        نام و نام خانوادگی
+                                    </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -75,7 +82,9 @@ function TeacherRegister() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">ایمیل</label>
+                                    <label htmlFor="email" className="form-label">
+                                        ایمیل
+                                    </label>
                                     <input
                                         onChange={handleChange}
                                         type="email"
@@ -85,7 +94,9 @@ function TeacherRegister() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">رمز عبور</label>
+                                    <label htmlFor="password" className="form-label">
+                                        رمز عبور
+                                    </label>
                                     <input
                                         onChange={handleChange}
                                         type="password"
@@ -95,7 +106,9 @@ function TeacherRegister() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="qualification" className="form-label">مدارک</label>
+                                    <label htmlFor="qualification" className="form-label">
+                                        مدارک
+                                    </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -105,7 +118,9 @@ function TeacherRegister() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="phone_number" className="form-label">شماره تلفن همراه</label>
+                                    <label htmlFor="phone_number" className="form-label">
+                                        شماره تلفن همراه
+                                    </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
@@ -115,16 +130,26 @@ function TeacherRegister() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="skills" className="form-label">مهارت ها</label>
+                                    <label htmlFor="skills" className="form-label">
+                                        مهارت ها
+                                    </label>
                                     <textarea
                                         onChange={handleChange}
                                         className="form-control"
                                         id="skills"
                                         name="skills"
                                     ></textarea>
-                                    <div id="emailHelp" className="form-text">sth</div>
+                                    <div id="emailHelp" className="form-text">
+                                        sth
+                                    </div>
                                 </div>
-                                <button onClick={submitForm} type="submit" className="btn btn-primary">ثبت نام</button>
+                                <button
+                                    onClick={submitForm}
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
+                                    ثبت نام
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -135,4 +160,3 @@ function TeacherRegister() {
 }
 
 export default TeacherRegister;
-

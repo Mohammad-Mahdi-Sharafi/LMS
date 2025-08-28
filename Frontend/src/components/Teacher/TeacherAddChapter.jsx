@@ -5,11 +5,9 @@ import axios from "axios";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
-function TeacherAddCourses() {
+function TeacherAddChapters() {
     const navigate = useNavigate();
-    const [category, setCategory] = useState([]);
-    const [courseData, setCourseData] = useState({
-        category: "",
+    const [chapterData, setChapterData] = useState({
         courseTitle: "",
         courseDescription: "",
         courseImage: "",
@@ -17,32 +15,19 @@ function TeacherAddCourses() {
     });
 
     useEffect(() => {
-        document.title = "Teacher Add Courses";
-
-        axios
-            .get(baseUrl + "/category", {
-                headers: {
-                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                },
-            })
-            .then((response) => {
-                setCategory(response.data);
-            })
-            .catch((error) => {
-                console.error("Error fetching categories:", error);
-            });
+        document.title = "Teacher Add Chapters";
     }, []);
 
     const handleChange = (event) => {
-        setCourseData({
-            ...courseData,
+        setChapterData({
+            ...chapterData,
             [event.target.name]: event.target.value,
         });
     };
 
     const handleFileChange = (event) => {
-        setCourseData({
-            ...courseData,
+        setChapterData({
+            ...chapterData,
             [event.target.name]: event.target.files[0],
         });
     };
@@ -51,16 +36,15 @@ function TeacherAddCourses() {
         event.preventDefault(); // prevent page reload
 
         const _formData = new FormData();
-        _formData.append("category", courseData.category);
-        _formData.append("teacher", 1);
-        _formData.append("title", courseData.courseTitle);
-        _formData.append("description", courseData.courseDescription);
-        _formData.append("featured_image", courseData.courseImage);
-        _formData.append("technologies", courseData.remarks);
+        _formData.append("course", 1)
+        _formData.append("title", chapterData.courseTitle);
+        _formData.append("description", chapterData.courseDescription);
+        _formData.append("video", chapterData.courseImage);
+        _formData.append("remarks", chapterData.remarks);
 
         try {
             axios
-                .post(baseUrl + "/course", _formData, {
+                .post(baseUrl + "/chapter", _formData, {
                     headers: {
                         Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                         "content-type": "multipart/form-data",
@@ -68,8 +52,7 @@ function TeacherAddCourses() {
                 })
                 .then((response) => {
                     console.log(response.data);
-
-                    navigate("/teacher-my-courses");
+                    navigate("/teacher-add-chapter"); // redirect after submit
                 });
         } catch (error) {
             console.log(error);
@@ -84,38 +67,11 @@ function TeacherAddCourses() {
                 </aside>
                 <section className="col-md-9">
                     <div className="card">
-                        <h5 className="card-header">اضافه کردن دوره</h5>
+                        <h5 className="card-header">مدیریت دوره</h5>
                         <div className="card-body">
-                            <form onSubmit={formSubmit}>
+                            <form>
                                 <div className="mb-3 row">
-                                    <label htmlFor="category" className="col-sm-2 col-form-label">
-                                        دسته بندی
-                                    </label>
-                                    <div className="col-sm-10">
-                                        <select
-                                            name="category"
-                                            onChange={handleChange}
-                                            value={courseData.category}
-                                            className="form-control"
-                                            id="category"
-                                        >
-                                            <option value="" disabled>
-                                                --- انتخاب دسته‌بندی ---
-                                            </option>
-                                            {category.map((cat) => (
-                                                <option key={cat.id} value={cat.id}>
-                                                    {cat.title}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div className="mb-3 row">
-                                    <label
-                                        htmlFor="courseTitle"
-                                        className="col-sm-2 col-form-label"
-                                    >
+                                    <label htmlFor="courseTitle" className="col-sm-2 col-form-label">
                                         عنوان
                                     </label>
                                     <div className="col-sm-10">
@@ -130,10 +86,7 @@ function TeacherAddCourses() {
                                 </div>
 
                                 <div className="mb-3 row">
-                                    <label
-                                        htmlFor="courseDescription"
-                                        className="col-sm-2 col-form-label"
-                                    >
+                                    <label htmlFor="courseDescription" className="col-sm-2 col-form-label">
                                         توضیحات
                                     </label>
                                     <div className="col-sm-10">
@@ -148,44 +101,38 @@ function TeacherAddCourses() {
                                 </div>
 
                                 <div className="mb-3 row">
-                                    <label
-                                        htmlFor="courseImage"
-                                        className="col-sm-2 col-form-label"
-                                    >
-                                        عکس دوره
+                                    <label htmlFor="courseVideo" className="col-sm-2 col-form-label">
+                                        فایل دوره
                                     </label>
                                     <div className="col-sm-10">
                                         <input
                                             onChange={handleFileChange}
                                             type="file"
                                             className="form-control"
-                                            id="courseImage"
-                                            name="courseImage"
+                                            id="courseVideo"
+                                            name="courseVideo"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="mb-3 row">
-                                    <label
-                                        htmlFor="courseTech"
-                                        className="col-sm-2 col-form-label"
-                                    >
-                                        تکنولوژی‌ها
+                                    <label htmlFor="remarks" className="col-sm-2 col-form-label">
+                                        یاد داشت مدرس
                                     </label>
                                     <div className="col-sm-10">
                                         <textarea
                                             onChange={handleChange}
                                             className="form-control"
-                                            placeholder="Python, Java, C, Javascript"
-                                            id="courseTech"
-                                            name="courseTech"
+                                            placeholder="این ویدیو روی مباحث پایه تمرکز دارد"
+                                            id="remarks"
+                                            name="remarks"
                                             rows="4"
                                         ></textarea>
                                     </div>
                                 </div>
 
                                 <hr/>
-                                <button type="submit" className="btn btn-primary">
+                                <button onClick={formSubmit} type="submit" className="btn btn-primary">
                                     اعمال تغییرات
                                 </button>
                             </form>
@@ -197,4 +144,5 @@ function TeacherAddCourses() {
     );
 }
 
-export default TeacherAddCourses;
+export default TeacherAddChapters;
+
