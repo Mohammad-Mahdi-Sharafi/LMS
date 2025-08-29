@@ -8,9 +8,9 @@ const baseUrl = "http://127.0.0.1:8000/api";
 function TeacherAddChapters() {
     const navigate = useNavigate();
     const [chapterData, setChapterData] = useState({
-        courseTitle: "",
-        courseDescription: "",
-        courseImage: "",
+        title: "",
+        description: "",
+        video: "",
         remarks: "",
     });
 
@@ -36,10 +36,10 @@ function TeacherAddChapters() {
         event.preventDefault(); // prevent page reload
 
         const _formData = new FormData();
-        _formData.append("course", 1)
+        _formData.append("course", 3)
         _formData.append("title", chapterData.courseTitle);
         _formData.append("description", chapterData.courseDescription);
-        _formData.append("video", chapterData.courseImage);
+        _formData.append("video", chapterData.video, chapterData.video.name);
         _formData.append("remarks", chapterData.remarks);
 
         try {
@@ -52,7 +52,7 @@ function TeacherAddChapters() {
                 })
                 .then((response) => {
                     console.log(response.data);
-                    navigate("/teacher-add-chapter"); // redirect after submit
+                    navigate("/teacher-add-courses"); // redirect after submit
                 });
         } catch (error) {
             console.log(error);
@@ -101,7 +101,7 @@ function TeacherAddChapters() {
                                 </div>
 
                                 <div className="mb-3 row">
-                                    <label htmlFor="courseVideo" className="col-sm-2 col-form-label">
+                                    <label htmlFor="video" className="col-sm-2 col-form-label">
                                         فایل دوره
                                     </label>
                                     <div className="col-sm-10">
@@ -109,8 +109,8 @@ function TeacherAddChapters() {
                                             onChange={handleFileChange}
                                             type="file"
                                             className="form-control"
-                                            id="courseVideo"
-                                            name="courseVideo"
+                                            id="video"
+                                            name="video"
                                         />
                                     </div>
                                 </div>
