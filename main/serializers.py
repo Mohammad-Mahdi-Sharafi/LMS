@@ -13,7 +13,9 @@ class TeacherSerializer(serializers.ModelSerializer):
             "password",
             "qualification",
             "phone_number",
-            "teacher_courses"
+            "skills",
+            "teacher_courses",
+            "skill_list"
         ]
         depth = 1
 

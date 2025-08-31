@@ -50,6 +50,11 @@ class CourseListCreate(ListCreateAPIView):
         if "category" in self.request.GET:
             category = self.request.GET["category"]
             qs = Course.objects.filter(technologies__icontains=category)
+        if "skill_name" and "teacher" in self.request.GET:
+            skill_name = self.request.GET["skill_name"]
+            skill_name = self.request.GET["teacher"]
+            teacher = Teacher.objects.filter(id=skill_name).first()
+            qs = Course.objects.filter(skills__icontains=skill_name, teacher=teacher)
         return qs
 
 # specific teacher course

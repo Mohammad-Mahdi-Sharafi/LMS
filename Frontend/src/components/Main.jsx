@@ -19,6 +19,7 @@ import TeacherChangePassword from "./Teacher/TeacherChangePassword";
 import TeacherAddCourses from "./Teacher/TeacherAddCourses";
 import TeacherEditCourses from "./Teacher/TeacherEditCourse";
 import TeacherMyCourses from "./Teacher/TeacherMyCourses";
+import TeacherSkillCourses from "./TeacherSkillCourses";
 import TeacherAddChapters from "./Teacher/TeacherAddChapter";
 import TeacherAllChapters from "./Teacher/TeacherAllChapters";
 import TeacherEditChapter from "./Teacher/TeacherEditChapter";
@@ -57,6 +58,7 @@ function Main() {
                 <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters/>}/>
                 <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>
                 <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
+                <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses/>}/>
                 <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
                 <Route path="/teacher-logout" element={<TeacherLogout/>}/>
                 <Route path="/all-courses" element={<AllCourses/>}/>

@@ -7,6 +7,7 @@ const baseUrl = "http://127.0.0.1:8000/api";
 function TeacherDetail() {
     const [courseData, setCourseData] = useState([]);
     const [teacherData, setTeacherData] = useState([]);
+    const [skillListData, setSkillListData] = useState([]);
     const {teacher_id} = useParams()
 
     useEffect(() => {
@@ -20,6 +21,7 @@ function TeacherDetail() {
             .then((response) => {
                 setTeacherData(response.data);
                 setCourseData(response.data.teacher_courses);
+                setSkillListData(response.data.skill_list);
             })
             .catch((error) => {
                 console.error("Error fetching categories:", error);
@@ -36,7 +38,11 @@ function TeacherDetail() {
                     <p>{teacherData.bio}</p>
                     <p className="fw-bold">
                         <b>
-                            مهارت ها : <Link to="/category/php">PHP</Link>, <Link to="/category/python">Python</Link>
+                            مهارت ها :
+                        {skillListData.map((skill, index) =>
+                        <Link to={`/teacher-skill-courses/${skill.trim()}/${teacher_id}`}
+                              className="badge badge-pill text-dark bg-warning ms-2">{skill.trim()}</Link>
+                    )}
                         </b>
                     </p>
                     <p className="fw-bold">

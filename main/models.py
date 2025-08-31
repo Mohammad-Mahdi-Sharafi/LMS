@@ -11,13 +11,17 @@ class Teacher(models.Model):
     password = models.CharField(max_length=100)
     qualification = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=100)
-    Skills = models.TextField()
+    skills = models.TextField()
 
     class Meta:
         verbose_name_plural = "1. Teachers"
 
     def __str__(self):
         return self.full_name
+
+    def skill_list(self):
+        skill_list = self.skills.split(",")
+        return skill_list
 
 
 # Course category field
@@ -94,6 +98,3 @@ class Student(models.Model):
 
     class Meta:
         verbose_name_plural = "5. Students"
-
-
-
