@@ -70,7 +70,7 @@ function TeacherEditCourses() {
         _formData.append("technologies", courseData.technologies);
 
         axios
-            .put(`${baseUrl}/course-detail/${course_id}`, _formData, {
+            .put(`${baseUrl}/teacher-course-detail/${course_id}`, _formData, {
                 headers: {
                     Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                     "content-type": "multipart/form-data",
