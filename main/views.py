@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions
 from .models import Teacher, CourseCategory, Course, Chapter
 from .serializers import TeacherSerializer, CourseCategorySerializer, CourseSerializer, ChapterSerializer
@@ -22,7 +22,10 @@ class TeacherDetail(RetrieveUpdateDestroyAPIView):
 def teacher_login(request):
     email = request.POST['email']
     password = request.POST['password']
-    teacherData = Teacher.objects.get(email=email, password=password)
+    try:
+        teacherData = Teacher.objects.get(email=email, password=password)
+    except Teacher.DoesNotExist:
+        teacherData = None
     if teacherData:
         return JsonResponse({'bool': True, "teacher_id": teacherData.id})
     else:
@@ -40,8 +43,17 @@ class CourseListCreate(ListCreateAPIView):
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if "result" in self.request.GET:
+            qs = Course.objects.all().order_by("id")[:4]
+        if "category" in self.request.GET:
+            category = self.request.GET["category"]
+            qs = Course.objects.filter(technologies__icontains=category)
+        return qs
+
 # specific teacher course
-class TeacherCourseList(ListAPIView):
+class TeacherCourseList(ListCreateAPIView):
     serializer_class = CourseSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -50,8 +62,28 @@ class TeacherCourseList(ListAPIView):
         teacher = Teacher.objects.get(id=teacher_id)
         return Course.objects.filter(teacher=teacher)
 
+class TeacherCourseDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
 class ChapterListCreate(ListCreateAPIView):
     queryset = Chapter.objects.all()
     serializer_class = ChapterSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class CourseChapterList(ListCreateAPIView):
+    serializer_class = ChapterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+        course = Course.objects.get(pk=course_id)
+        return Chapter.objects.filter(course=course)
+
+class TeacherChapterDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Chapter.objects.all()
+    serializer_class = ChapterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 

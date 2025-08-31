@@ -9,7 +9,8 @@ const baseUrl = "http://127.0.0.1:8000/api";
 function TeacherMyCourses() {
     const navigate = useNavigate();
     const [courseData, setCourseData] = useState([]);
-        const teacherId = localStorage.getItem("teacherId");
+    const teacherId = localStorage.getItem("teacherId");
+    const [totalResult, setTotalResult] = useState(0);
 
     useEffect(() => {
         document.title = "Teacher My Courses";
@@ -21,6 +22,7 @@ function TeacherMyCourses() {
             })
             .then((response) => {
                 setCourseData(response.data);
+                setTotalResult(response.data.length);
             })
             .catch((error) => {
                 console.error("Error fetching categories:", error);
@@ -40,39 +42,58 @@ function TeacherMyCourses() {
                             <div className="card-body">
                                 <table className="table table-bordered">
                                     <thead>
-                                        <tr>
-                                            <th>نام</th>
-                                            <th>سازنده</th>
-                                            <th>عکس دوره</th>
-                                            <th>مدیریت دوره</th>
-                                            <th>وضعیت انتشار</th>
-                                        </tr>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>سازنده</th>
+                                        <th>عکس دوره</th>
+                                        <th>مدیریت دوره</th>
+                                        <th>وضعیت انتشار</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        {courseData.map((course, index) =>
-                                            <tr>
-                                                <td>{course.title}</td>
-                                                <td>
-                                                    <Link to="/">{course.teacher}</Link>
-                                                </td>
-                                                <td><img src={course.featured_image} width="88" className="rounded" alt={course.title} /></td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-sm btn-dark active"
-                                                        onClick={() => navigate("/teacher-add-chapters/" + course.id)}
-                                                    >
-                                                        تغییر
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <button className="btn btn-danger btn-sm active">
-                                                        حذف
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )}
+                                    {courseData.map((course, index) =>
+                                        <tr>
+                                            <td>{course.title}</td>
+                                            <td>
+                                                <Link to="/">{course.teacher}</Link>
+                                            </td>
+                                            <td><img src={course.featured_image} width="88" className="rounded"
+                                                     alt={course.title}/></td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-sm btn-dark active ms-2"
+                                                    onClick={() => navigate("/teacher-add-chapters/" + course.id)}
+                                                >
+                                                    فصل جدید
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm btn-dark active ms-2"
+                                                    onClick={() => navigate("/teacher-all-chapters/" + course.id)}
+                                                >
+                                                    ویرایش فصل
+                                                </button>
+                                                                                                <button
+                                                    className="btn btn-sm btn-dark active ms-2"
+                                                    onClick={() => navigate("/teacher-edit-course/" + course.id)}
+                                                >
+                                                    ویرایش دوره
+                                                </button>
+                                            </td>
+
+                                            <td>
+                                                <button className="btn btn-danger btn-sm active">
+                                                    حذف
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )}
                                     </tbody>
                                 </table>
+                                {totalResult === 0 && (
+                                    <div className="text-center text-muted py-3">
+                                        هیچ فصلی برای این دوره وجود ندارد.
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </section>

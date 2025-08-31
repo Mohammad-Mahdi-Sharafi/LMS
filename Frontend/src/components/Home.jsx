@@ -1,10 +1,30 @@
-import {Link} from "react-router-dom";
-import {useEffect} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axios from "axios";
+
+const baseUrl = "http://127.0.0.1:8000/api";
 
 function Home() {
+    const navigate = useNavigate();
+    const [courseData, setCourseData] = useState([]);
+    const [totalResult, setTotalResult] = useState(0);
+
     useEffect(() => {
-        document.title = "LMS | Home Page"
-    })
+        document.title = "LMS | Home Page";
+        axios
+            .get(`${baseUrl}/course?result=4`, {
+                headers: {
+                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                },
+            })
+            .then((response) => {
+                setCourseData(response.data);
+                setTotalResult(response.data.length);
+            })
+            .catch((error) => {
+                console.error("Error fetching courses:", error);
+            });
+    }, []);
     return (
         <>
             <div className="container mt-4">
@@ -16,112 +36,29 @@ function Home() {
                 </h3>
                 {/* latest courses */}
                 <div className="row mb-4">
-                    <div className="col-md-3">
-                        <div className="card">
-                            <Link to="/detail/1">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </Link>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <Link to="/detail/1">عنوان دوره</Link>
-                                </h5>
+                    {courseData.map((course) => (
+                        <div className="col-md-3 mb-4" key={course.id}>
+                            <div className="card">
+                                <Link to={`/detail/${course.id}`}>
+                                    <img
+                                        src={course.featured_image || "/vite.svg"}
+                                        className="card-img-top"
+                                        style={{
+                                            width: "100%",
+                                            height: "200px",
+                                            // objectFit: "cover",
+                                        }}
+                                        alt={course.title || "Course image"}
+                                    />
+                                </Link>
+                                <div className="card-body">
+                                    <h5 className="card-title">
+                                        <Link to={`/detail/${course.id}`}>{course.title}</Link>
+                                    </h5>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* End latest courses*/}
-                {/* popular courses */}
-                <h3 className="pb-1 mb-4 mt-5">
-                    محبوب ترین دوره ها
-                    <Link to="/popular-courses" className="float-start">
-                        ادامه
-                    </Link>
-                </h3>
-                <div className="row mb-4">
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card">
-                            <a href="#">
-                                <img src="../../public/vite.svg" className="card-img-top" alt="..."/>
-                            </a>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <a href="#">عنوان دوره</a>
-                                </h5>
-                            </div>
-                        </div>
-                    </div>
+                    ))}
                 </div>
                 {/* End popular courses */}
                 {/* Popular teachers */}

@@ -8,11 +8,14 @@ class TeacherSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "bio",
             "email",
             "password",
             "qualification",
             "phone_number",
+            "teacher_courses"
         ]
+        depth = 1
 
 
 class CourseCategorySerializer(serializers.ModelSerializer):
@@ -35,7 +38,22 @@ class CourseSerializer(serializers.ModelSerializer):
             "title",
             "description",
             "featured_image",
-            "technologies"
+            "technologies",
+            "course_chapters",
+            "related_videos",
+            "tech_list"
+
+        ]
+        depth = 1
+
+    def get_related_courses(self, obj):
+        return [
+            {
+                "id": course.id,
+                "title": course.title,
+                "featured_image": course.featured_image.url if course.featured_image else None
+            }
+            for course in obj.related_courses.all()
         ]
 
 class ChapterSerializer(serializers.ModelSerializer):

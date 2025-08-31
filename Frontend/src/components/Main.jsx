@@ -17,8 +17,11 @@ import TeacherRegister from "./Teacher/TeacherRegister";
 import TeacherDashboard from "./Teacher/TeacherDashboard";
 import TeacherChangePassword from "./Teacher/TeacherChangePassword";
 import TeacherAddCourses from "./Teacher/TeacherAddCourses";
+import TeacherEditCourses from "./Teacher/TeacherEditCourse";
 import TeacherMyCourses from "./Teacher/TeacherMyCourses";
 import TeacherAddChapters from "./Teacher/TeacherAddChapter";
+import TeacherAllChapters from "./Teacher/TeacherAllChapters";
+import TeacherEditChapter from "./Teacher/TeacherEditChapter";
 import TeacherProfileSettings from "./Teacher/TeacherProfileSettings";
 import TeacherLogout from "./Teacher/TeacherLogout";
 import AllCourses from "./AllCourses";
@@ -50,7 +53,10 @@ function Main() {
                 <Route path="/teacher-change-password" element={<TeacherChangePassword/>}/>
                 <Route path="/teacher-my-courses" element={<TeacherMyCourses/>}/>
                 <Route path="/teacher-add-courses" element={<TeacherAddCourses/>}/>
+                <Route path="/teacher-edit-course/:course_id" element={<TeacherEditCourses/>}/>
                 <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters/>}/>
+                <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>
+                <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
                 <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
                 <Route path="/teacher-logout" element={<TeacherLogout/>}/>
                 <Route path="/all-courses" element={<AllCourses/>}/>

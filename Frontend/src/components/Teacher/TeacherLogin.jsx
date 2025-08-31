@@ -9,6 +9,8 @@ function TeacherLogin() {
         password: "",
     });
 
+    const [errorMsg, setErrorMsg] = useState("")
+
     const handleChange = (event) => {
         setTeacherLoginData({
             ...teacherLoginData,
@@ -32,6 +34,8 @@ function TeacherLogin() {
                         localStorage.setItem("teacherLoginStatus", true);
                         localStorage.setItem("teacherId", response.data.teacher_id)
                         window.location.href = "/teacher-dashboard";
+                    }else{
+                        setErrorMsg("Invalid Email or Password")
                     }
                 });
         } catch (error) {
@@ -55,6 +59,7 @@ function TeacherLogin() {
                         <div className="card">
                             <h3 className="card-header">ورود مدرس</h3>
                             <div className="card-body">
+                                {errorMsg && <p className="text-danger" >{errorMsg}</p>}
                                 <form>
                                     <div className="mb-3">
                                         <label htmlFor="email" className="form-label">
