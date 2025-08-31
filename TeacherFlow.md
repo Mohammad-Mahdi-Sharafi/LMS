@@ -2,8 +2,8 @@
 ------
 
 1. Database Model
-2. Register
-3. Login
+2. StudentRegister
+3. StudentLogin
 4. Add Course
 5. Update Course
 6. Unpublish

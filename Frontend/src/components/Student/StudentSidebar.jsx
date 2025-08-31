@@ -1,13 +1,13 @@
 import {Link} from "react-router-dom";
 
-function Sidebar() {
+function StudentSidebar() {
     return (
         <>
             <div className="card">
                 <h5 className="card-header">
                     <Link
                         className="list-group-item list-group-item-action"
-                        to="/user-dashboard"
+                        to="/student-dashboard"
                     >
                         داشبورد
                     </Link>
@@ -55,4 +55,4 @@ function Sidebar() {
     );
 }
 
-export default Sidebar;
+export default StudentSidebar;

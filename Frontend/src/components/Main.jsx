@@ -4,9 +4,10 @@ import Footer from "./Footer";
 import About from "./About";
 import CourseDetail from "./CourseDetail";
 import TeacherDetail from "./TeacherDetail";
-import Register from "./Student/Register";
-import Login from "./Student/Login";
-import Dashboard from "./Student/Dashboard";
+import StudentRegister from "./Student/StudentRegister.jsx";
+import StudentLogin from "./Student/StudentLogin.jsx";
+import StudentLogout from "./Student/StudentLogout";
+import StudentDashboard from "./Student/StudentDashboard.jsx";
 import MyCourses from "./Student/MyCourses";
 import FavoriteCourses from "./Student/FavoriteCourses";
 import RecommendedCourses from "./Student/RecommendedCourses";
@@ -40,10 +41,11 @@ function Main() {
                 <Route path="/about" element={<About/>}/>
                 <Route path="/detail/:course_id" element={<CourseDetail/>}/>
                 <Route path="/teacher-detail/:teacher_id" element={<TeacherDetail/>}/>
-                <Route path="/user-login" element={<Login/>}/>
-                <Route path="/user-register" element={<Register/>}/>
-                <Route path="/user-dashboard" element={<Dashboard/>}/>
-                <Route path="/my-courses" element={<MyCourses/>}/>
+                <Route path="/student-login" element={<StudentLogin/>}/>
+                <Route path="/student-logout" element={<StudentLogout/>}/>
+                <Route path="/student-register" element={<StudentRegister/>}/>
+                <Route path="/student-dashboard" element={<StudentDashboard/>}/>
+                <Route path="/student-my-courses" element={<MyCourses/>}/>
                 <Route path="/favorite-courses" element={<FavoriteCourses/>}/>
                 <Route path="/recommended-courses" element={<RecommendedCourses/>}/>
                 <Route path="/profile-settings" element={<ProfileSettings/>}/>

@@ -1,18 +1,25 @@
-# main/views.py
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
-from .models import Teacher, CourseCategory, Course, Chapter
+from .models import (
+    Teacher,
+    CourseCategory,
+    Course,
+    Chapter,
+    Student,
+    StudentCourseEnrollment,
+)
 from .serializers import (
     TeacherSerializer,
-    TeacherSummarySerializer,
     CourseCategorySerializer,
     CourseListSerializer,
     CourseDetailSerializer,
     ChapterSerializer,
+    StudentSerializer,
+    StudentCourseEnrollSerializer,
 )
+
 
 class TeacherListCreate(ListCreateAPIView):
     queryset = Teacher.objects.all()
@@ -106,5 +113,32 @@ class TeacherChapterDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChapterSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class StudentListCreate(ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+@csrf_exempt
+def student_login(request):
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    try:
+        studentData = Student.objects.get(email=email, password=password)
+        return JsonResponse({'bool': True, "student_id": studentData.id})
+    except Student.DoesNotExist:
+        return JsonResponse({'bool': False})
 
 
+class StudentCourseEnrollmentCreateList(ListCreateAPIView):
+    queryset = StudentCourseEnrollment.objects.all()
+    serializer_class = StudentCourseEnrollSerializer
+
+@csrf_exempt
+def fetch_enroll_status(request, student_id, course_id):
+    student = Student.objects.filter(id=student_id).first()
+    course = Course.objects.filter(id=course_id).first()
+    enrollStatus = StudentCourseEnrollment.objects.filter(student=student, course=course).count()
+    if enrollStatus:
+        return JsonResponse({"bool": True})
+    else:
+        return JsonResponse({"bool": False})

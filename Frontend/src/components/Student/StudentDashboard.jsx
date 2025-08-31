@@ -1,14 +1,20 @@
 import {Link} from "react-router-dom"
-import Sidebar from "./Sidebar.jsx";
+import StudentSidebar from "./StudentSidebar.jsx";
+import {useEffect} from "react";
 
 
-function Dashboard() {
+function StudentDashboard() {
+
+    useEffect(() => {
+        document.title = "Student Dashboard";
+    }, []);
+
     return (
         <>
             <div className="container mt-4">
                 <div className="row">
                     <aside className="col-md-3">
-                        <Sidebar/>
+                        <StudentSidebar/>
                     </aside>
                     <section className="col-md-9">
                     </section>
@@ -18,4 +24,4 @@ function Dashboard() {
     )
 }
 
-export default Dashboard
+export default StudentDashboard

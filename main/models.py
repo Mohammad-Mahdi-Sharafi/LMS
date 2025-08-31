@@ -89,12 +89,25 @@ class Chapter(models.Model):
 # Student
 class Student(models.Model):
     full_name = models.CharField(max_length=100)
+    user_name = models.CharField(max_length=100, null=True)
     email = models.EmailField()
     password = models.CharField(max_length=100)
-    qualification = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=100)
-    address = models.TextField()
     interested_categories = models.TextField()
 
     class Meta:
         verbose_name_plural = "5. Students"
+
+    def __str__(self):
+        return self.full_name
+
+#student course enrollment
+class StudentCourseEnrollment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="enrolled_courses")
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="enrolled_student")
+    enrolled_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "6. Student Course Enrollment"
+
+    def __str__(self):
+        return f"{self.course.title}-{self.student.full_name}"

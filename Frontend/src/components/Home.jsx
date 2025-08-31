@@ -27,6 +27,7 @@ function Home() {
     }, []);
     return (
         <>
+            {/* Start latest courses */}
             <div className="container mt-4">
                 <h3 className="pb-1 mb-4">
                     جدید ترین دوره ها
@@ -60,7 +61,7 @@ function Home() {
                         </div>
                     ))}
                 </div>
-                {/* End popular courses */}
+                {/* End latest courses */}
                 {/* Popular teachers */}
                 <h3 className="pb-1 mb-4 mt-5">
                     مدرسان برتر

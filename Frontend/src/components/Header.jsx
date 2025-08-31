@@ -2,6 +2,7 @@ import {Link} from "react-router-dom";
 
 function Header() {
     const teacherLoginStatus = localStorage.getItem("teacherLoginStatus");
+    const studentLoginStatus = localStorage.getItem("studentLoginStatus");
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -88,26 +89,30 @@ function Header() {
                                     دانشجو
                                 </a>
                                 <ul className="dropdown-menu">
+                                    {studentLoginStatus !== "true" && (
+                                        <>
+                                            <li>
+                                                <Link className="dropdown-item" to="/student-login">
+                                                    ورود
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link className="dropdown-item" to="/student-register">
+                                                    ثبت نام
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <hr className="dropdown-divider"/>
+                                            </li>
+                                        </>
+                                    )}
                                     <li>
-                                        <Link className="dropdown-item" to="/user-login">
-                                            ورود
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/user-register">
-                                            ثبت نام
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <hr className="dropdown-divider"/>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/user-dashboard">
+                                        <Link className="dropdown-item" to="/student-dashboard">
                                             داشبورد
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link className="dropdown-item" to="/user-login">
+                                        <Link className="dropdown-item" to="/student-login">
                                             خروج
                                         </Link>
                                     </li>

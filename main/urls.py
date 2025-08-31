@@ -12,4 +12,8 @@ urlpatterns = [
     path(route="chapter", view=views.ChapterListCreate.as_view(), name="chapter"),
     path(route="course-chapters/<int:course_id>", view=views.CourseChapterList.as_view(), name="course-chapter-list"),
     path(route="chapter-detail/<int:pk>", view=views.TeacherChapterDetailView.as_view(), name="chapter-detail"),
+    path(route="student", view=views.StudentListCreate.as_view(), name="student"),
+    path(route="student-login", view=views.student_login, name="student-login"),
+    path(route="student-enroll-course", view=views.StudentCourseEnrollmentCreateList.as_view(), name="student-enroll-course"),
+    path(route="fetch-enroll-status/<int:student_id>/<int:course_id>", view=views.fetch_enroll_status, name="fetch-enroll-status"),
 ]

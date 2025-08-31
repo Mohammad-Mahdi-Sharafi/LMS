@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import Sidebar from "./Sidebar.jsx";
+import StudentSidebar from "./StudentSidebar.jsx";
 
 function ChangePassword() {
     return (
@@ -7,7 +7,7 @@ function ChangePassword() {
             <div className="container mt-4">
                 <div className="row">
                     <aside className="col-md-3">
-                        <Sidebar/>
+                        <StudentSidebar/>
                     </aside>
                     <section className="col-md-9">
                         <div className="card">

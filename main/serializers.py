@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
-from main.models import Teacher, Chapter, CourseCategory, Course
+from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment
+
 
 def absolute_media_url(request, field):
     """Return absolute URL for File/Image fields, or None if empty."""
@@ -15,10 +16,12 @@ def absolute_media_url(request, field):
         return request.build_absolute_uri(url)
     return url
 
+
 class TeacherSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
         fields = ["id", "full_name"]
+
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,6 +37,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             "skills",
         ]
 
+
 class ChapterSerializer(serializers.ModelSerializer):
     video = serializers.SerializerMethodField()
 
@@ -45,10 +49,12 @@ class ChapterSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return absolute_media_url(request, obj.video)
 
+
 class CourseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseCategory
         fields = ["id", "title", "description"]
+
 
 class CourseListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for lists and teacher course list pages."""
@@ -70,6 +76,7 @@ class CourseListSerializer(serializers.ModelSerializer):
     def get_featured_image(self, obj):
         request = self.context.get("request")
         return absolute_media_url(request, obj.featured_image)
+
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     """Full serializer used on course detail endpoint (contains chapters, tech_list and related courses)."""
@@ -124,3 +131,25 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             }
             for c in qs
         ]
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = [
+            "id",
+            "full_name",
+            "email",
+            "user_name",
+            "password",
+            "interested_categories"
+        ]
+
+class StudentCourseEnrollSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentCourseEnrollment
+        fields = [
+            "id",
+            "course",
+            "student",
+            "enrolled_time"
+        ]
+
