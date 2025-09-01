@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Q
-from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment
+from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment, CourseRating
 
 
 def absolute_media_url(request, field):
@@ -85,6 +85,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     featured_image = serializers.SerializerMethodField()
     tech_list = serializers.SerializerMethodField()
     related_courses = serializers.SerializerMethodField()
+    total_enrolled_students = serializers.SerializerMethodField()
+    course_rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -99,6 +101,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             "tech_list",
             "course_chapters",
             "related_courses",
+            "total_enrolled_students",
+            "course_rating"
         ]
 
     def get_featured_image(self, obj):
@@ -131,6 +135,14 @@ class CourseDetailSerializer(serializers.ModelSerializer):
             }
             for c in qs
         ]
+
+    def get_total_enrolled_students(self, obj):
+        return obj.total_enrolled_students()
+
+    def get_course_rating(self, obj):
+        return obj.course_rating()
+
+
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
@@ -152,4 +164,24 @@ class StudentCourseEnrollSerializer(serializers.ModelSerializer):
             "student",
             "enrolled_time"
         ]
+        depth=1
 
+class CourseRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseRating
+        fields = [
+            "id",
+            "course",
+            "student",
+            "rating",
+            "review",
+            "review_time"
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(CourseRatingSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get("request")
+
+        self.Meta.depth = 0
+        if request and request.method == "GET":
+            self.Meta.depth = 1

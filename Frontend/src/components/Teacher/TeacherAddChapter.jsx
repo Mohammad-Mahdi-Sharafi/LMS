@@ -7,6 +7,8 @@ const baseUrl = "http://127.0.0.1:8000/api";
 
 function TeacherAddChapters() {
     const navigate = useNavigate();
+    const {course_id} = useParams();
+
     const [chapterData, setChapterData] = useState({
         title: "",
         description: "",
@@ -32,30 +34,27 @@ function TeacherAddChapters() {
         });
     };
 
-    const {course_id} = useParams();
-
     const formSubmit = (event) => {
-        event.preventDefault(); // prevent page reload
+        event.preventDefault();
 
         const _formData = new FormData();
-
         _formData.append("course", course_id);
-        _formData.append("title", chapterData.courseTitle);
-        _formData.append("description", chapterData.courseDescription);
-        _formData.append("video", chapterData.video, chapterData.video.name);
+        _formData.append("title", chapterData.title);
+        _formData.append("description", chapterData.description);
+        _formData.append("video", chapterData.video);
         _formData.append("remarks", chapterData.remarks);
 
         try {
             axios
                 .post(baseUrl + "/chapter", _formData, {
                     headers: {
-                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                        Authorization:
+                            "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                         "content-type": "multipart/form-data",
                     },
                 })
-                .then((response) => {
-                    console.log(response.data);
-                    navigate(`/teacher-all-chapters/${course_id}`); // redirect after submit
+                .then(() => {
+                    navigate(`/teacher-all-chapters/${course_id}`);
                 });
         } catch (error) {
             console.log(error);
@@ -63,81 +62,101 @@ function TeacherAddChapters() {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-5">
             <div className="row">
-                <aside className="col-md-3">
+                {/* Sidebar */}
+                <aside className="col-md-3 mb-4">
                     <TeacherSidebar/>
                 </aside>
+
+                {/* Form Section */}
                 <section className="col-md-9">
-                    <div className="card">
-                        <h5 className="card-header">فصل جدید</h5>
-                        <div className="card-body">
-                            <form>
-                                <div className="mb-3 row">
-                                    <label htmlFor="courseTitle" className="col-sm-2 col-form-label">
-                                        عنوان
+                    <div className="card shadow-sm rounded-3 border-0">
+                        <h5 className="card-header bg-dark text-white py-3">
+                            افزودن فصل جدید
+                        </h5>
+                        <div className="card-body p-4">
+                            <form onSubmit={formSubmit}>
+                                {/* Title */}
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="title"
+                                        className="form-label fw-semibold"
+                                    >
+                                        عنوان فصل
                                     </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            onChange={handleChange}
-                                            type="text"
-                                            className="form-control"
-                                            id="courseTitle"
-                                            name="courseTitle"
-                                        />
-                                    </div>
+                                    <input
+                                        onChange={handleChange}
+                                        type="text"
+                                        className="form-control"
+                                        id="title"
+                                        name="title"
+                                        placeholder="مثال: مبانی مقدماتی پایتون"
+                                    />
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="courseDescription" className="col-sm-2 col-form-label">
+                                {/* Description */}
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="description"
+                                        className="form-label fw-semibold"
+                                    >
                                         توضیحات
                                     </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            id="courseDescription"
-                                            name="courseDescription"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                    <textarea
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="4"
+                                        placeholder="توضیح مختصری در مورد فصل..."
+                                    ></textarea>
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="video" className="col-sm-2 col-form-label">
-                                        فایل دوره
+                                {/* Video */}
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="video"
+                                        className="form-label fw-semibold"
+                                    >
+                                        فایل ویدئو
                                     </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            onChange={handleFileChange}
-                                            type="file"
-                                            className="form-control"
-                                            id="video"
-                                            name="video"
-                                        />
-                                    </div>
+                                    <input
+                                        onChange={handleFileChange}
+                                        type="file"
+                                        className="form-control"
+                                        id="video"
+                                        name="video"
+                                    />
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="remarks" className="col-sm-2 col-form-label">
+                                {/* Remarks */}
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="remarks"
+                                        className="form-label fw-semibold"
+                                    >
                                         یادداشت مدرس
                                     </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="این ویدیو روی مباحث پایه تمرکز دارد"
-                                            id="remarks"
-                                            name="remarks"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                    <textarea
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="این ویدیو روی مباحث پایه تمرکز دارد"
+                                        id="remarks"
+                                        name="remarks"
+                                        rows="3"
+                                    ></textarea>
                                 </div>
 
-                                <hr/>
-                                <button onClick={formSubmit} type="submit" className="btn btn-primary">
-                                    اعمال تغییرات
-                                </button>
+                                {/* Submit */}
+                                <div className="d-flex justify-content-end pt-3">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-dark px-4 fw-semibold"
+                                    >
+                                        ذخیره فصل
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -148,4 +167,5 @@ function TeacherAddChapters() {
 }
 
 export default TeacherAddChapters;
+
 

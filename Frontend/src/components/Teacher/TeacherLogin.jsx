@@ -9,7 +9,7 @@ function TeacherLogin() {
         password: "",
     });
 
-    const [errorMsg, setErrorMsg] = useState("")
+    const [errorMsg, setErrorMsg] = useState("");
 
     const handleChange = (event) => {
         setTeacherLoginData({
@@ -18,24 +18,26 @@ function TeacherLogin() {
         });
     };
 
-    const submitForm = () => {
-        const teacherFromData = new FormData();
-        teacherFromData.append("email", teacherLoginData.email);
-        teacherFromData.append("password", teacherLoginData.password);
+    const submitForm = (e) => {
+        e.preventDefault(); // prevent default reload
+        const teacherFormData = new FormData();
+        teacherFormData.append("email", teacherLoginData.email);
+        teacherFormData.append("password", teacherLoginData.password);
         try {
             axios
-                .post(baseUrl + "/teacher-login", teacherFromData, {
+                .post(baseUrl + "/teacher-login", teacherFormData, {
                     headers: {
-                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                        Authorization:
+                            "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                     },
                 })
                 .then((response) => {
                     if (response.data.bool === true) {
                         localStorage.setItem("teacherLoginStatus", true);
-                        localStorage.setItem("teacherId", response.data.teacher_id)
+                        localStorage.setItem("teacherId", response.data.teacher_id);
                         window.location.href = "/teacher-dashboard";
-                    }else{
-                        setErrorMsg("Invalid Email or Password")
+                    } else {
+                        setErrorMsg("ایمیل یا رمز عبور نادرست است");
                     }
                 });
         } catch (error) {
@@ -51,71 +53,85 @@ function TeacherLogin() {
     useEffect(() => {
         document.title = "Teacher Login";
     }, []);
+
     return (
-        <>
-            <div className="container mt-4">
-                <div className="row">
-                    <div className="col-6 offset-3">
-                        <div className="card">
-                            <h3 className="card-header">ورود مدرس</h3>
-                            <div className="card-body">
-                                {errorMsg && <p className="text-danger" >{errorMsg}</p>}
-                                <form>
-                                    <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">
-                                            ایمیل
-                                        </label>
-                                        <input
-                                            name="email"
-                                            onChange={handleChange}
-                                            type="email"
-                                            className="form-control"
-                                            id="email"
-                                            aria-describedby="usernameHelp"
-                                        />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">
-                                            رمز عبور
-                                        </label>
-                                        <input
-                                            name="password"
-                                            onChange={handleChange}
-                                            type="password"
-                                            className="form-control"
-                                            id="password"
-                                        />
-                                    </div>
-                                    <div className="mb-3 form-check">
-                                        <input
-                                            name="checkbox"
-                                            type="checkbox"
-                                            className="form-check-input float-end"
-                                            id="rememberMe"
-                                        />
-                                        <label
-                                            className="form-check-label me-4"
-                                            htmlFor="rememberMe"
-                                        >
-                                            مرا به خاطر داشته باش
-                                        </label>
-                                    </div>
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card shadow border-0 rounded-3">
+                        <div className="card-header bg-dark text-white text-center py-3">
+                            <h4 className="mb-0">ورود مدرس</h4>
+                        </div>
+                        <div className="card-body p-4">
+                            {errorMsg && (
+                                <div className="alert alert-danger text-center">
+                                    {errorMsg}
+                                </div>
+                            )}
+                            <form onSubmit={submitForm}>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label fw-bold">
+                                        ایمیل
+                                    </label>
+                                    <input
+                                        name="email"
+                                        onChange={handleChange}
+                                        type="email"
+                                        className="form-control form-control-lg"
+                                        id="email"
+                                        placeholder="ایمیل خود را وارد کنید"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label fw-bold">
+                                        رمز عبور
+                                    </label>
+                                    <input
+                                        name="password"
+                                        onChange={handleChange}
+                                        type="password"
+                                        className="form-control form-control-lg"
+                                        id="password"
+                                        placeholder="رمز عبور خود را وارد کنید"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-3 form-check">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        id="rememberMe"
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        htmlFor="rememberMe"
+                                    >
+                                        مرا به خاطر داشته باش
+                                    </label>
+                                </div>
+
+                                <div className="d-grid">
                                     <button
-                                        name="button"
-                                        onClick={submitForm}
                                         type="submit"
-                                        className="btn btn-primary"
+                                        className="btn btn-primary btn-lg shadow-sm"
                                     >
                                         ورود
                                     </button>
-                                </form>
-                            </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div className="card-footer text-center text-muted py-2">
+                            <small>© 2025 مکتب | تمامی حقوق محفوظ است</small>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
 export default TeacherLogin;
+

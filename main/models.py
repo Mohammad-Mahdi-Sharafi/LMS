@@ -69,8 +69,16 @@ class Course(models.Model):
         tech_list = self.technologies.split(",")
         return tech_list
 
+    def course_rating(self):
+        result = CourseRating.objects.filter(course=self).aggregate(avg_rating=models.Avg('rating'))
+        return result["avg_rating"]
+
     def __str__(self):
         return self.title
+
+    def total_enrolled_students(self):
+        total_enrolled_students = StudentCourseEnrollment.objects.filter(course=self).count()
+        return total_enrolled_students
 
 #Chapter
 class Chapter(models.Model):
@@ -111,3 +119,16 @@ class StudentCourseEnrollment(models.Model):
 
     def __str__(self):
         return f"{self.course.title}-{self.student.full_name}"
+
+class CourseRating(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    rating = models.PositiveBigIntegerField(null=True)
+    review = models.TextField(null=True)
+    review_time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "7. Course Rating"
+
+    def __str__(self):
+        return f"{self.course.title}-{self.student.full_name} {str(self.rating)}"

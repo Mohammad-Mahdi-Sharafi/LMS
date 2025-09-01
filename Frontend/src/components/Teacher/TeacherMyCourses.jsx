@@ -19,13 +19,29 @@ function TeacherMyCourses() {
     const fetchCourses = () => {
         axios
             .get(`${baseUrl}/teacher-courses/${teacherId}`, {
-                headers: {
-                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                },
+                headers: { Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf" },
             })
-            .then((response) => {
-                setCourseData(response.data);
-                setTotalResult(response.data.length);
+            .then(async (response) => {
+                const courses = response.data;
+
+                // 🔹 For each course, fetch detail to get total_enrolled_students
+                const withEnrollCounts = await Promise.all(
+                    courses.map(async (course) => {
+                        try {
+                            const detailRes = await axios.get(
+                                `${baseUrl}/teacher-course-detail/${course.id}`,
+                                { headers: { Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf" } }
+                            );
+                            return { ...course, total_enrolled_students: detailRes.data.total_enrolled_students };
+                        } catch (err) {
+                            console.error("Error fetching details for course", course.id, err);
+                            return { ...course, total_enrolled_students: 0 };
+                        }
+                    })
+                );
+
+                setCourseData(withEnrollCounts);
+                setTotalResult(withEnrollCounts.length);
             })
             .catch((error) => {
                 console.error("Error fetching courses:", error);
@@ -37,12 +53,9 @@ function TeacherMyCourses() {
 
         axios
             .delete(`${baseUrl}/course/${courseId}/`, {
-                headers: {
-                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                },
+                headers: { Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf" },
             })
             .then(() => {
-                // Remove deleted course from state without reloading
                 setCourseData((prevData) => prevData.filter((c) => c.id !== courseId));
                 setTotalResult((prev) => prev - 1);
             })
@@ -52,78 +65,101 @@ function TeacherMyCourses() {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container-fluid mt-4">
             <div className="row">
-                <aside className="col-md-3">
-                    <TeacherSidebar/>
+                {/* Sidebar */}
+                <aside className="col-md-3 col-lg-2 mb-4">
+                    <TeacherSidebar />
                 </aside>
-                <section className="col-md-9">
-                    <div className="card">
-                        <h5 className="card-header">دوره های من</h5>
-                        <div className="card-body">
-                            <table className="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>نام</th>
-                                    <th>سازنده</th>
-                                    <th>عکس دوره</th>
-                                    <th>مدیریت دوره</th>
-                                    <th>وضعیت انتشار</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {courseData.map((course) => (
-                                    <tr key={course.id}>
-                                        <td>{course.title}</td>
-                                        <td>
-                                            <Link to={`/teacher-detail/${course.teacher.id}`}>
-                                                {course.teacher.full_name}
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            <img
-                                                src={course.featured_image}
-                                                width="88"
-                                                className="rounded"
-                                                alt={course.title}
-                                            />
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-sm btn-dark active ms-2"
-                                                onClick={() => navigate(`/teacher-add-chapters/${course.id}`)}
-                                            >
-                                                فصل جدید
-                                            </button>
-                                            <button
-                                                className="btn btn-sm btn-dark active ms-2"
-                                                onClick={() => navigate(`/teacher-all-chapters/${course.id}`)}
-                                            >
-                                                ویرایش فصل
-                                            </button>
-                                            <button
-                                                className="btn btn-sm btn-dark active ms-2"
-                                                onClick={() => navigate(`/teacher-edit-course/${course.id}`)}
-                                            >
-                                                ویرایش دوره
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-danger btn-sm active"
-                                                onClick={() => handleDelete(course.id)}
-                                            >
-                                                حذف
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
 
-                            {totalResult === 0 && (
-                                <div className="text-center text-muted py-3">
+                {/* Courses Section */}
+                <section className="col-md-9 col-lg-10">
+                    <div className="card shadow-sm border-0 rounded-3">
+                        <div className="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                            <h5 className="mb-0 fw-bold">📚 دوره‌های من</h5>
+                            <span className="badge bg-primary px-3 py-2 rounded-pill">
+                                {totalResult} دوره
+                            </span>
+                        </div>
+
+                        <div className="card-body p-0">
+                            {totalResult === 0 ? (
+                                <div className="text-center text-muted py-4">
                                     هیچ دوره‌ای برای شما وجود ندارد.
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className="table table-hover align-middle mb-0">
+                                        <thead className="table-light">
+                                            <tr>
+                                                <th scope="col">📷 تصویر</th>
+                                                <th scope="col">🎓 عنوان</th>
+                                                <th scope="col">👨‍🏫 مدرس</th>
+                                                <th scope="col">تعداد ثبت نامی ها</th>
+                                                <th scope="col">⚙️ مدیریت</th>
+                                                <th scope="col">❌ حذف</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {courseData.map((course) => (
+                                                <tr key={course.id}>
+                                                    <td style={{ width: "120px" }}>
+                                                        <img
+                                                            src={course.featured_image}
+                                                            alt={course.title}
+                                                            className="img-fluid rounded shadow-sm"
+                                                            style={{ height: "70px", objectFit: "cover" }}
+                                                        />
+                                                    </td>
+                                                    <td className="fw-semibold">{course.title}</td>
+                                                    <td>
+                                                        <Link
+                                                            to={`/teacher-detail/${course.teacher.id}`}
+                                                            className="text-decoration-none fw-medium"
+                                                        >
+                                                            {course.teacher.full_name}
+                                                        </Link>
+                                                    </td>
+                                                    <td className="fw-semibold">
+                                                        <Link to={`/teacher-enrolled-students/${course.id}`} className="text-decoration-none fw-medium"
+                                                        >
+                                                            {course.total_enrolled_students ?? 0}
+                                                        </Link>
+                                                    </td>
+                                                    <td>
+                                                        <div className="d-flex flex-wrap gap-2">
+                                                            <button
+                                                                className="btn btn-sm btn-outline-primary"
+                                                                onClick={() => navigate(`/teacher-add-chapters/${course.id}`)}
+                                                            >
+                                                                ➕ فصل
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-secondary"
+                                                                onClick={() => navigate(`/teacher-all-chapters/${course.id}`)}
+                                                            >
+                                                                ✏️ فصل‌ها
+                                                            </button>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-dark"
+                                                                onClick={() => navigate(`/teacher-edit-course/${course.id}`)}
+                                                            >
+                                                                ⚙️ ویرایش
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-sm btn-danger"
+                                                            onClick={() => handleDelete(course.id)}
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             )}
                         </div>
@@ -135,4 +171,5 @@ function TeacherMyCourses() {
 }
 
 export default TeacherMyCourses;
+
 

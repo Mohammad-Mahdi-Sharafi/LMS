@@ -20,6 +20,7 @@ import TeacherChangePassword from "./Teacher/TeacherChangePassword";
 import TeacherAddCourses from "./Teacher/TeacherAddCourses";
 import TeacherEditCourses from "./Teacher/TeacherEditCourse";
 import TeacherMyCourses from "./Teacher/TeacherMyCourses";
+import TeacherEnrolledStudents from "./Teacher/TeacherEnrolledStudents";
 import TeacherSkillCourses from "./TeacherSkillCourses";
 import TeacherAddChapters from "./Teacher/TeacherAddChapter";
 import TeacherAllChapters from "./Teacher/TeacherAllChapters";
@@ -56,6 +57,7 @@ function Main() {
                 <Route path="/teacher-change-password" element={<TeacherChangePassword/>}/>
                 <Route path="/teacher-my-courses" element={<TeacherMyCourses/>}/>
                 <Route path="/teacher-add-courses" element={<TeacherAddCourses/>}/>
+                <Route path="/teacher-enrolled-students/:course_id" element={<TeacherEnrolledStudents/>}/>
                 <Route path="/teacher-edit-course/:course_id" element={<TeacherEditCourses/>}/>
                 <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters/>}/>
                 <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>

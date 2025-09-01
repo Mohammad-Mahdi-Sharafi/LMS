@@ -18,11 +18,17 @@ function CourseDetail() {
     const [relatedCourseData, setRelatedCourseData] = useState([]);
     const [techListData, setTechListData] = useState([]);
     const [studentLoginStatus, setStudentLoginStatus] = useState("");
+    const [ratingStatus, setRatingStatus] = useState("");
+    const [rating, setRating] = useState(0);
+    const [ratingData, setRatingData] = useState({
+        rating: "",
+        review: "",
+    });
 
     useEffect(() => {
         document.title = "Course Detail";
 
-        // Fetch course details
+        // Fetch course detail
         axios
             .get(`${baseUrl}/teacher-course-detail/${course_id}`, {
                 headers: {
@@ -35,18 +41,16 @@ function CourseDetail() {
                 setChapterData(response.data.course_chapters || []);
                 setRelatedCourseData(response.data.related_courses || []);
                 setTechListData(response.data.tech_list || []);
-            })
-            .catch((error) => {
-                console.error("Error fetching course detail:", error);
+                if (response.data.course_rating !== "" && response.data.course_rating != null) {
+                    setRating(response.data.course_rating)
+                }
             });
 
-        // ✅ read login status
+        // Check login
         const loginStatus = localStorage.getItem("studentLoginStatus");
-        if (loginStatus === "true") {
-            setStudentLoginStatus("success");
-        }
+        if (loginStatus === "true") setStudentLoginStatus("success");
 
-        // Fetch enroll status
+        // Check enrollment
         if (studentId) {
             axios
                 .get(`${baseUrl}/fetch-enroll-status/${studentId}/${course_id}`, {
@@ -55,26 +59,33 @@ function CourseDetail() {
                     },
                 })
                 .then((response) => {
-                    if (response.data.bool === true) {
-                        setEnrollStatus("success");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error fetching enroll detail:", error);
+                    if (response.data.bool) setEnrollStatus("success");
                 });
         }
+
+        // Fetch rating status
+        try{
+            axios.get(`${baseUrl}/fetch-rating-status/${studentId}/${course_id}`, {
+                    headers: {
+                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    },}).then((response) => {
+                        setRatingStatus("success");
+            })
+        }catch(error){
+            console.log(error);
+        }
+
     }, [course_id, studentId]);
 
-    // Enroll course
+    // Enroll in course
     const enrollCourse = (event) => {
         event.preventDefault();
-
         const _formData = new FormData();
         _formData.append("course", course_id);
         _formData.append("student", studentId);
 
         axios
-            .post(baseUrl + "/student-enroll-course", _formData, {
+            .post(`${baseUrl}/student-enroll-course`, _formData, {
                 headers: {
                     Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                 },
@@ -87,170 +98,301 @@ function CourseDetail() {
                     timer: 3000,
                     position: "top-right",
                     timerProgressBar: true,
-                    showConfirmButton: true,
+                    showConfirmButton: false,
                 });
-                setEnrollStatus("success"); // update immediately
-            })
-            .catch((error) => {
-                console.error("Error enrolling course:", error);
+                setEnrollStatus("success");
             });
     };
 
-    const goToPage = () => {
-        navigate("/student-login");
+    const goToPage = () => navigate("/student-login");
+
+    // Rating form
+    const handleChange = (event) => {
+        setRatingData({
+            ...ratingData,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    const formSubmit = (event) => {
+        event.preventDefault();
+
+        const _formData = new FormData();
+        _formData.append("course", course_id);
+        _formData.append("student", studentId);
+        _formData.append("rating", ratingData.rating);
+        _formData.append("review", ratingData.review);
+
+        axios
+            .post(`${baseUrl}/course-rating/${course_id}`, _formData, {
+                headers: {
+                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then(() => {
+                Swal.fire({
+                    title: "امتیاز شما ثبت شد",
+                    icon: "success",
+                    toast: true,
+                    timer: 5000,
+                    position: "top-right",
+                    showConfirmButton: false,
+                });
+                setRatingData({rating: "", review: ""});
+                window.location.reload();
+            })
+            .catch((error) => console.error("Error submitting rating:", error));
     };
 
     return (
-        <div className="container mt-3">
-            <div className="row">
-                <div className="col-4">
-                    <img
-                        src={courseData.featured_image}
-                        style={{width: "100%", height: "200px"}}
-                        className="card-img-top"
-                        alt={courseData.title || "Course image"}
-                    />
-                </div>
-                <div className="col-8">
-                    <h3>{courseData.title}</h3>
-                    <p>{courseData.description}</p>
-                    <p className="fw-bold">
-                        <strong>
-                            مدرس دوره :{" "}
-                            {teacherData.id && (
-                                <Link to={`/teacher-detail/${teacherData.id}`}>
-                                    {teacherData.full_name}
-                                </Link>
-                            )}
-                        </strong>
-                    </p>
-
-                    <p className="fw-bold">
-                        تکنولوژی های دوره:&nbsp;
-                        {techListData.map((tech, index) => (
+        <div className="container-fluid p-0">
+            {/* Hero Section */}
+            <div
+                className="position-relative text-white"
+                style={{
+                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.9)), url(${courseData.featured_image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    height: "350px",
+                }}
+            >
+                <div className="container h-100 d-flex flex-column justify-content-center">
+                    <h1 className="fw-bold">{courseData.title}</h1>
+                    <p className="lead">{courseData.description}</p>
+                    <div>
+                        {techListData.map((tech, i) => (
                             <Link
-                                key={index}
+                                key={i}
                                 to={`/category/${tech.trim()}`}
-                                className="badge bg-warning ms-1"
+                                className="badge bg-warning text-dark me-2"
                             >
                                 {tech}
                             </Link>
                         ))}
-                    </p>
-                    <p className="fw-bold"><b>مدت زمان: 6 ساعت و 40 دقیقه</b></p>
-                    <p className="fw-bold"><b>تعداد دانشجویان : 456 دانشجو</b></p>
-                    <p className="fw-bold"><b>امتیاز دوره : 4.5</b></p>
-
-                    {studentLoginStatus === "success" && enrollStatus !== "success" && (
-                        <button onClick={enrollCourse} className="btn btn-success">
-                            ثبت نام
-                        </button>
-                    )}
-                    {enrollStatus === "success" && <span>قبلا ثبت نام کردید</span>}
-                    {studentLoginStatus !== "success" && (
-                        <button onClick={goToPage} className="btn btn-success">
-                            ثبت نام
-                        </button>
-                    )}
+                    </div>
+                    <div className="mt-3">
+                        {studentLoginStatus === "success" && enrollStatus !== "success" && (
+                            <button
+                                onClick={enrollCourse}
+                                className="btn btn-lg btn-success shadow"
+                            >
+                                ثبت نام در دوره
+                            </button>
+                        )}
+                        {enrollStatus === "success" && (
+                            <span className="fw-bold">شما در این دوره ثبت‌نام کرده‌اید</span>
+                        )}
+                        {studentLoginStatus !== "success" && (
+                            <button
+                                onClick={goToPage}
+                                className="btn btn-lg btn-primary shadow"
+                            >
+                                ورود برای ثبت نام
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Course Chapters */}
-            <div className="card mt-4">
-                <h5 className="card-header">فصل های دوره</h5>
-                {enrollStatus === "success" ? (
-                    <ul className="list-group list-group-flush">
-                        {chapterData.map((chapter, index) => {
-                            const modalId = `videoModal-${index}`;
-                            return (
-                                <li key={chapter.id || index} className="list-group-item">
-                                    {chapter.title} | {chapter.description}
-                                    <span className="float-start">
-                            <span className="ms-2">1 ساعت 30 دقیقه</span>
-                            <button
-                                className="btn btn-sm btn-dark float-start"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#${modalId}`}
+            <div className="container mt-5">
+                {/* Teacher Info */}
+                <div className="card shadow-lg border-0 mb-4">
+                    <div className="card-body">
+                        <h4 className="fw-bold">مدرس دوره:</h4>
+                        {teacherData.id && (
+                            <Link
+                                to={`/teacher-detail/${teacherData.id}`}
+                                className="text-decoration-none"
                             >
-                                <i className="bi-play"></i>
-                            </button>
-                        </span>
+                                <h5>{teacherData.full_name}</h5>
+                            </Link>
+                        )}
+                        <div className="d-flex flex-wrap gap-4 mt-3 align-items-center">
+                            <span className="fw-bold">⏱ مدت زمان: 6 ساعت و 40 دقیقه</span>
+                            <span className="fw-bold">
+                👥 تعداد دانشجویان:{" "}
+                                <span dir="ltr">{courseData.total_enrolled_students}</span>
+              </span>
+                            <div className="fw-bold d-flex align-items-center">
+                                 ⭐ امتیاز دوره: {`${rating}/5`}
+                                {studentLoginStatus === "success" &&
+                                    enrollStatus === "success" &&
+                                    ratingStatus !== "success" &&
+                                    (
+                                        <button
+                                            className="btn btn-sm btn-success shadow ms-3"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#courseRatingModal"
+                                        >
+                                            امتیاز دهی
+                                        </button>
+                                    )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                                    {/* Video Modal */}
-                                    <div
-                                        className="modal fade"
-                                        id={modalId}
-                                        tabIndex="-1"
-                                        aria-labelledby={`${modalId}-label`}
-                                        aria-hidden="true"
+                {/* Rating Modal */}
+                <div
+                    className="modal fade"
+                    id="courseRatingModal"
+                    tabIndex="-1"
+                    aria-labelledby="courseRatingModalLabel"
+                    aria-hidden="true"
+                >
+                    <div className="modal-dialog modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="courseRatingModalLabel">
+                                    ثبت امتیاز
+                                </h1>
+                                <button
+                                    type="button"
+                                    className="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={formSubmit}>
+                                    <div className="mb-3">
+                                        <label htmlFor="rating" className="form-label">
+                                            امتیاز
+                                        </label>
+                                        <select
+                                            id="rating"
+                                            name="rating"
+                                            className="form-control"
+                                            value={ratingData.rating}
+                                            onChange={handleChange}
+                                            required
+                                        >
+                                            <option value="">انتخاب کنید</option>
+                                            <option value="1">1 - خیلی ضعیف</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3 - متوسط</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5 - عالی</option>
+                                        </select>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="review" className="form-label">
+                                            نظرات
+                                        </label>
+                                        <textarea
+                                            id="review"
+                                            name="review"
+                                            className="form-control"
+                                            rows="3"
+                                            value={ratingData.review}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-primary">
+                                        ثبت
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Chapters */}
+                <div className="card shadow border-0 mb-4">
+                    <h5 className="card-header bg-dark text-white">فصل‌های دوره</h5>
+                    {enrollStatus === "success" ? (
+                        <ul className="list-group list-group-flush">
+                            {chapterData.map((chapter, idx) => {
+                                const modalId = `videoModal-${idx}`;
+                                return (
+                                    <li
+                                        key={chapter.id || idx}
+                                        className="list-group-item d-flex justify-content-between align-items-center"
                                     >
-                                        <div className="modal-dialog modal-xl">
-                                            <div className="modal-content">
-                                                <div className="modal-header">
-                                                    <h1
-                                                        className="modal-title fs-5"
-                                                        id={`${modalId}-label`}
-                                                    >
-                                                        {chapter.title}
-                                                    </h1>
-                                                    <button
-                                                        type="button"
-                                                        className="btn-close"
-                                                        data-bs-dismiss="modal"
-                                                        aria-label="Close"
-                                                    ></button>
-                                                </div>
-                                                <div className="modal-body">
-                                                    <div className="ratio ratio-16x9">
-                                                        <iframe
-                                                            src={chapter.video?.url}
-                                                            title={chapter.title}
-                                                            allowFullScreen
-                                                        ></iframe>
+                                        <div>
+                                            <h6 className="mb-1">{chapter.title}</h6>
+                                            <small className="text-muted">{chapter.description}</small>
+                                        </div>
+                                        <button
+                                            className="btn btn-outline-dark btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target={`#${modalId}`}
+                                        >
+                                            مشاهده ویدیو
+                                        </button>
+
+                                        {/* Video Modal */}
+                                        <div
+                                            className="modal fade"
+                                            id={modalId}
+                                            tabIndex="-1"
+                                            aria-hidden="true"
+                                        >
+                                            <div className="modal-dialog modal-xl">
+                                                <div className="modal-content">
+                                                    <div className="modal-header">
+                                                        <h5 className="modal-title">{chapter.title}</h5>
+                                                        <button
+                                                            type="button"
+                                                            className="btn-close"
+                                                            data-bs-dismiss="modal"
+                                                        ></button>
+                                                    </div>
+                                                    <div className="modal-body">
+                                                        <div className="ratio ratio-16x9">
+                                                            <iframe
+                                                                src={chapter.video?.url}
+                                                                title={chapter.title}
+                                                                allowFullScreen
+                                                            ></iframe>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    <div className="card-body text-center text-muted">
-                        <p>برای مشاهده فصل‌های دوره ابتدا باید در این دوره ثبت‌نام کنید.</p>
-                    </div>
-                )}
-            </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    ) : (
+                        <div className="card-body text-center text-muted">
+                            برای مشاهده فصل‌های دوره ابتدا باید در این دوره ثبت‌نام کنید.
+                        </div>
+                    )}
+                </div>
 
-
-            {/* Related Courses */}
-            <h3 className="pb-1 mb-4 mt-4">دوره های مرتبط</h3>
-            <div className="row mb-4">
-                {relatedCourseData.map((relatedCourse, index) => (
-                    <div className="col-md-3" key={index}>
-                        <div className="card">
-                            <Link target="_blank" to={`/detail/${relatedCourse.id}`}>
-                                <img
-                                    src={
-                                        relatedCourse.featured_image?.startsWith("http")
-                                            ? relatedCourse.featured_image
-                                            : `${sideUrl}${relatedCourse.featured_image}`
-                                    }
-                                    className="card-img-top"
-                                    alt={relatedCourse.title}
-                                />
-                            </Link>
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    <Link to={`/detail/${relatedCourse.id}`}>
-                                        {relatedCourse.title}
-                                    </Link>
-                                </h5>
+                {/* Related Courses */}
+                <h3 className="mb-4">دوره‌های مرتبط</h3>
+                <div className="row">
+                    {relatedCourseData.map((course, idx) => (
+                        <div className="col-md-3 mb-4" key={idx}>
+                            <div className="card h-100 border-0 shadow-sm hover-shadow">
+                                <Link to={`/detail/${course.id}`}>
+                                    <img
+                                        src={
+                                            course.featured_image?.startsWith("http")
+                                                ? course.featured_image
+                                                : `${sideUrl}${course.featured_image}`
+                                        }
+                                        className="card-img-top"
+                                        alt={course.title}
+                                    />
+                                </Link>
+                                <div className="card-body">
+                                    <h6 className="card-title">
+                                        <Link
+                                            to={`/detail/${course.id}`}
+                                            className="text-decoration-none"
+                                        >
+                                            {course.title}
+                                        </Link>
+                                    </h6>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );

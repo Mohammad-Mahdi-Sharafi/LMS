@@ -31,9 +31,8 @@ function TeacherEditChapter() {
         });
     };
 
-
     useEffect(() => {
-        document.title = "Teacher Edit Chapter";
+        document.title = "Teacher Edit Chapter"; // don’t change
         axios
             .get(`${baseUrl}/chapter-detail/${chapter_id}`, {
                 headers: {
@@ -67,8 +66,7 @@ function TeacherEditChapter() {
                     "Content-Type": "multipart/form-data",
                 },
             })
-            .then((response) => {
-                console.log(response.data);
+            .then(() => {
                 navigate(`/teacher-all-chapters/${chapterData.course}`);
             })
             .catch((error) => {
@@ -83,18 +81,33 @@ function TeacherEditChapter() {
         const ext = fileUrl.split('.').pop().toLowerCase();
 
         if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-            return <img src={fileUrl} alt="chapter file" width="200" className="rounded mt-2"/>;
+            return (
+                <img
+                    src={fileUrl}
+                    alt="فایل فصل"
+                    className="img-fluid rounded mt-3 shadow-sm"
+                    style={{maxWidth: "220px"}}
+                />
+            );
         } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
             return (
-                <video controls width="250" className="mt-2">
+                <video
+                    controls
+                    className="rounded mt-3 shadow-sm"
+                    style={{maxWidth: "300px"}}
+                >
                     <source src={fileUrl} type={`video/${ext}`}/>
                     مرورگر شما از ویدئو پشتیبانی نمی‌کند.
                 </video>
             );
         } else {
             return (
-                <a href={fileUrl} target="_blank" rel="noopener noreferrer"
-                   className="btn btn-sm btn-primary mt-2">
+                <a
+                    href={fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-outline-primary mt-3"
+                >
                     دانلود فایل موجود
                 </a>
             );
@@ -108,78 +121,64 @@ function TeacherEditChapter() {
                     <TeacherSidebar/>
                 </aside>
                 <section className="col-md-9">
-                    <div className="card">
-                        <h5 className="card-header">ویرایش فصل</h5>
+                    <div className="card shadow-sm">
+                        <h5 className="card-header bg-primary text-white">ویرایش فصل</h5>
                         <div className="card-body">
                             <form onSubmit={formSubmit}>
-                                <div className="mb-3 row">
-                                    <label htmlFor="title" className="col-sm-2 col-form-label">
-                                        عنوان
-                                    </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            value={chapterData.title || ""}
-                                            onChange={handleChange}
-                                            type="text"
-                                            className="form-control"
-                                            id="title"
-                                            name="title"
-                                        />
-                                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="title" className="form-label fw-bold">عنوان فصل</label>
+                                    <input
+                                        value={chapterData.title || ""}
+                                        onChange={handleChange}
+                                        type="text"
+                                        className="form-control"
+                                        id="title"
+                                        name="title"
+                                        placeholder="مثلاً: مقدمه برنامه‌نویسی"
+                                    />
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="description" className="col-sm-2 col-form-label">
-                                        توضیحات
-                                    </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            value={chapterData.description || ""}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            id="description"
-                                            name="description"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="description" className="form-label fw-bold">توضیحات</label>
+                                    <textarea
+                                        value={chapterData.description || ""}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        id="description"
+                                        name="description"
+                                        rows="4"
+                                        placeholder="توضیح مختصر درباره محتوای این فصل"
+                                    ></textarea>
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="video" className="col-sm-2 col-form-label">
-                                        فایل دوره
-                                    </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            onChange={handleFileChange}
-                                            type="file"
-                                            className="form-control"
-                                            id="video"
-                                            name="video"
-                                        />
-                                        {renderFilePreview()}
-                                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="video" className="form-label fw-bold">فایل آموزشی</label>
+                                    <input
+                                        onChange={handleFileChange}
+                                        type="file"
+                                        className="form-control"
+                                        id="video"
+                                        name="video"
+                                    />
+                                    {renderFilePreview()}
                                 </div>
 
-                                <div className="mb-3 row">
-                                    <label htmlFor="remarks" className="col-sm-2 col-form-label">
-                                        یادداشت مدرس
-                                    </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            value={chapterData.remarks || ""}
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="این ویدیو روی مباحث پایه تمرکز دارد"
-                                            id="remarks"
-                                            name="remarks"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                <div className="mb-3">
+                                    <label htmlFor="remarks" className="form-label fw-bold">یادداشت مدرس</label>
+                                    <textarea
+                                        value={chapterData.remarks || ""}
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="مثال: این ویدئو روی مباحث پایه تمرکز دارد"
+                                        id="remarks"
+                                        name="remarks"
+                                        rows="3"
+                                    ></textarea>
                                 </div>
 
                                 <hr/>
-                                <button type="submit" className="btn btn-primary">
-                                    اعمال تغییرات
+                                <button type="submit" className="btn btn-success">
+                                    ذخیره تغییرات
                                 </button>
                             </form>
                         </div>
@@ -191,3 +190,4 @@ function TeacherEditChapter() {
 }
 
 export default TeacherEditChapter;
+

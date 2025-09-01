@@ -1,13 +1,12 @@
-import {useEffect} from "react";
+import { useEffect } from "react";
 
 function StudentLogout() {
     useEffect(() => {
-        localStorage.removeItem("studentLoginStatus");
+        localStorage.setItem("studentLoginStatus", "false");
         localStorage.removeItem("studentId");
         window.location.href = "/student-login";
     }, []);
-
-    return <></>;
 }
 
 export default StudentLogout;
+

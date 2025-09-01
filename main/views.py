@@ -9,6 +9,7 @@ from .models import (
     Chapter,
     Student,
     StudentCourseEnrollment,
+    CourseRating
 )
 from .serializers import (
     TeacherSerializer,
@@ -17,7 +18,7 @@ from .serializers import (
     CourseDetailSerializer,
     ChapterSerializer,
     StudentSerializer,
-    StudentCourseEnrollSerializer,
+    StudentCourseEnrollSerializer, CourseRatingSerializer,
 )
 
 
@@ -139,6 +140,36 @@ def fetch_enroll_status(request, student_id, course_id):
     course = Course.objects.filter(id=course_id).first()
     enrollStatus = StudentCourseEnrollment.objects.filter(student=student, course=course).count()
     if enrollStatus:
+        return JsonResponse({"bool": True})
+    else:
+        return JsonResponse({"bool": False})
+
+class FetchEnrolledStudents(ListCreateAPIView):
+    queryset = StudentCourseEnrollment.objects.all()
+    serializer_class = StudentCourseEnrollSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+        course = Course.objects.get(id=course_id)
+        return StudentCourseEnrollment.objects.filter(course=course)
+
+class CourseRatingListCreate(ListCreateAPIView):
+    queryset = CourseRating.objects.all()
+    serializer_class = CourseRatingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+        course = Course.objects.get(id=course_id)
+        return CourseRating.objects.filter(course=course)
+
+@csrf_exempt
+def fetch_rating_status(request, student_id, course_id):
+    student = Student.objects.filter(id=student_id).first()
+    course = Course.objects.filter(id=course_id).first()
+    rating_status = CourseRating.objects.filter(student=student, course=course).count()
+    if rating_status:
         return JsonResponse({"bool": True})
     else:
         return JsonResponse({"bool": False})

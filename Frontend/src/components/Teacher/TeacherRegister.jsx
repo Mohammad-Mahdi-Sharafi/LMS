@@ -14,7 +14,6 @@ function TeacherRegister() {
         status: "",
     });
 
-    // Handle input changes
     const handleChange = (event) => {
         setTeacherData({
             ...teacherData,
@@ -24,10 +23,10 @@ function TeacherRegister() {
 
     useEffect(() => {
         document.title = "Teacher Register";
-    }, []); // Run only once
+    }, []);
 
-    //submit form
-    const submitForm = (event) => {
+    const submitForm = (e) => {
+        e.preventDefault(); // prevent reload
         const teacherFormData = new FormData();
         teacherFormData.append("full_name", teacherData.full_name);
         teacherFormData.append("email", teacherData.email);
@@ -40,117 +39,136 @@ function TeacherRegister() {
             axios
                 .post(baseUrl + "/teacher", teacherFormData, {
                     headers: {
-                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                        Authorization:
+                            "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                     },
                 })
                 .then((response) => {
                     console.log(response.data);
                 })
                 .catch((error) => {
-                    // <-- handle axios errors here
                     console.log(error);
                 });
         } catch (error) {
             console.log(error);
         }
     };
+
     const teacherLoginStatus = localStorage.getItem("teacherLoginStatus");
     if (teacherLoginStatus === "true") {
         window.location.href = "/teacher-dashboard";
     }
 
-    // end
-
     return (
-        <div className="container mt-4">
-            <div className="row">
-                <div className="col-6 offset-3">
-                    <div className="card">
-                        <h3 className="card-header">ثبت نام مدرس</h3>
-                        <div className="card-body">
-                            <form>
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-8 col-lg-6">
+                    <div className="card shadow border-0 rounded-3">
+                        <div className="card-header bg-primary text-white text-center py-3">
+                            <h4 className="mb-0">ثبت نام مدرس</h4>
+                        </div>
+                        <div className="card-body p-4">
+                            <form onSubmit={submitForm}>
                                 <div className="mb-3">
-                                    <label htmlFor="full_name" className="form-label">
+                                    <label htmlFor="full_name" className="form-label fw-bold">
                                         نام و نام خانوادگی
                                     </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="full_name"
                                         name="full_name"
+                                        placeholder="نام کامل خود را وارد کنید"
+                                        required
                                     />
                                 </div>
+
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">
+                                    <label htmlFor="email" className="form-label fw-bold">
                                         ایمیل
                                     </label>
                                     <input
                                         onChange={handleChange}
                                         type="email"
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="email"
                                         name="email"
+                                        placeholder="ایمیل خود را وارد کنید"
+                                        required
                                     />
                                 </div>
+
                                 <div className="mb-3">
-                                    <label htmlFor="password" className="form-label">
+                                    <label htmlFor="password" className="form-label fw-bold">
                                         رمز عبور
                                     </label>
                                     <input
                                         onChange={handleChange}
                                         type="password"
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="password"
                                         name="password"
+                                        placeholder="رمز عبور انتخاب کنید"
+                                        required
                                     />
                                 </div>
+
                                 <div className="mb-3">
-                                    <label htmlFor="qualification" className="form-label">
+                                    <label htmlFor="qualification" className="form-label fw-bold">
                                         مدارک
                                     </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="qualification"
                                         name="qualification"
+                                        placeholder="مثال: کارشناسی ارشد مهندسی کامپیوتر"
                                     />
                                 </div>
+
                                 <div className="mb-3">
-                                    <label htmlFor="phone_number" className="form-label">
+                                    <label htmlFor="phone_number" className="form-label fw-bold">
                                         شماره تلفن همراه
                                     </label>
                                     <input
                                         onChange={handleChange}
                                         type="text"
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="phone_number"
                                         name="phone_number"
+                                        placeholder="0912xxxxxxx"
                                     />
                                 </div>
+
                                 <div className="mb-3">
-                                    <label htmlFor="skills" className="form-label">
+                                    <label htmlFor="skills" className="form-label fw-bold">
                                         مهارت ها
                                     </label>
                                     <textarea
                                         onChange={handleChange}
-                                        className="form-control"
+                                        className="form-control form-control-lg"
                                         id="skills"
                                         name="skills"
+                                        rows="3"
+                                        placeholder="مهارت‌های خود را وارد کنید (مثال: React, Python, تدریس)"
                                     ></textarea>
-                                    <div id="emailHelp" className="form-text">
-                                        sth
-                                    </div>
+                                    <div className="form-text">می‌توانید چند مهارت را با ویرگول جدا کنید</div>
                                 </div>
-                                <button
-                                    onClick={submitForm}
-                                    type="submit"
-                                    className="btn btn-primary"
-                                >
-                                    ثبت نام
-                                </button>
+
+                                <div className="d-grid">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-success btn-lg shadow-sm"
+                                    >
+                                        ثبت نام
+                                    </button>
+                                </div>
                             </form>
+                        </div>
+                        <div className="card-footer text-center text-muted py-2">
+                            <small>© 2025 مکتب | تمامی حقوق محفوظ است</small>
                         </div>
                     </div>
                 </div>

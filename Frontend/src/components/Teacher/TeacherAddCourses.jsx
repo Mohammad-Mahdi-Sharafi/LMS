@@ -23,7 +23,8 @@ function TeacherAddCourses() {
         axios
             .get(baseUrl + "/category", {
                 headers: {
-                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    Authorization:
+                        "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                 },
             })
             .then((response) => {
@@ -49,7 +50,7 @@ function TeacherAddCourses() {
     };
 
     const formSubmit = (event) => {
-        event.preventDefault(); // prevent page reload
+        event.preventDefault();
 
         const _formData = new FormData();
         _formData.append("category", courseData.category);
@@ -63,13 +64,12 @@ function TeacherAddCourses() {
             axios
                 .post(baseUrl + "/course", _formData, {
                     headers: {
-                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                        Authorization:
+                            "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                         "content-type": "multipart/form-data",
                     },
                 })
-                .then((response) => {
-                    console.log(response.data);
-
+                .then(() => {
                     navigate("/teacher-my-courses");
                 });
         } catch (error) {
@@ -78,117 +78,127 @@ function TeacherAddCourses() {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-5">
             <div className="row">
-                <aside className="col-md-3">
+                {/* Sidebar */}
+                <aside className="col-md-3 mb-4">
                     <TeacherSidebar/>
                 </aside>
+
+                {/* Form Section */}
                 <section className="col-md-9">
-                    <div className="card">
-                        <h5 className="card-header">اضافه کردن دوره</h5>
-                        <div className="card-body">
+                    <div className="card shadow-sm rounded-3 border-0">
+                        <h5 className="card-header bg-dark text-white py-3">
+                            اضافه کردن دوره
+                        </h5>
+                        <div className="card-body p-4">
                             <form onSubmit={formSubmit}>
-                                <div className="mb-3 row">
-                                    <label htmlFor="category" className="col-sm-2 col-form-label">
-                                        دسته بندی
+                                {/* Category */}
+                                <div className="mb-3">
+                                    <label
+                                        htmlFor="category"
+                                        className="form-label fw-semibold"
+                                    >
+                                        دسته‌بندی
                                     </label>
-                                    <div className="col-sm-10">
-                                        <select
-                                            name="category"
-                                            onChange={handleChange}
-                                            value={courseData.category}
-                                            className="form-control"
-                                            id="category"
-                                        >
-                                            <option value="" disabled>
-                                                --- انتخاب دسته‌بندی ---
+                                    <select
+                                        name="category"
+                                        onChange={handleChange}
+                                        value={courseData.category}
+                                        className="form-select"
+                                        id="category"
+                                    >
+                                        <option value="" disabled>
+                                            --- انتخاب دسته‌بندی ---
+                                        </option>
+                                        {category.map((cat) => (
+                                            <option key={cat.id} value={cat.id}>
+                                                {cat.title}
                                             </option>
-                                            {category.map((cat) => (
-                                                <option key={cat.id} value={cat.id}>
-                                                    {cat.title}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                <div className="mb-3 row">
+                                {/* Title */}
+                                <div className="mb-3">
                                     <label
                                         htmlFor="courseTitle"
-                                        className="col-sm-2 col-form-label"
+                                        className="form-label fw-semibold"
                                     >
                                         عنوان
                                     </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            onChange={handleChange}
-                                            type="text"
-                                            className="form-control"
-                                            id="courseTitle"
-                                            name="courseTitle"
-                                        />
-                                    </div>
+                                    <input
+                                        onChange={handleChange}
+                                        type="text"
+                                        className="form-control"
+                                        id="courseTitle"
+                                        name="courseTitle"
+                                        placeholder="مثال: دوره مقدماتی پایتون"
+                                    />
                                 </div>
 
-                                <div className="mb-3 row">
+                                {/* Description */}
+                                <div className="mb-3">
                                     <label
                                         htmlFor="courseDescription"
-                                        className="col-sm-2 col-form-label"
+                                        className="form-label fw-semibold"
                                     >
                                         توضیحات
                                     </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            id="courseDescription"
-                                            name="courseDescription"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                    <textarea
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        id="courseDescription"
+                                        name="courseDescription"
+                                        rows="4"
+                                        placeholder="توضیحات کامل دوره را وارد کنید..."
+                                    ></textarea>
                                 </div>
 
-                                <div className="mb-3 row">
+                                {/* Course Image */}
+                                <div className="mb-3">
                                     <label
                                         htmlFor="courseImage"
-                                        className="col-sm-2 col-form-label"
+                                        className="form-label fw-semibold"
                                     >
                                         عکس دوره
                                     </label>
-                                    <div className="col-sm-10">
-                                        <input
-                                            onChange={handleFileChange}
-                                            type="file"
-                                            className="form-control"
-                                            id="courseImage"
-                                            name="courseImage"
-                                        />
-                                    </div>
+                                    <input
+                                        onChange={handleFileChange}
+                                        type="file"
+                                        className="form-control"
+                                        id="courseImage"
+                                        name="courseImage"
+                                    />
                                 </div>
 
-                                <div className="mb-3 row">
+                                {/* Technologies */}
+                                <div className="mb-3">
                                     <label
-                                        htmlFor="courseTech"
-                                        className="col-sm-2 col-form-label"
+                                        htmlFor="remarks"
+                                        className="form-label fw-semibold"
                                     >
                                         تکنولوژی‌ها
                                     </label>
-                                    <div className="col-sm-10">
-                                        <textarea
-                                            onChange={handleChange}
-                                            className="form-control"
-                                            placeholder="Python, Java, C, Javascript"
-                                            id="courseTech"
-                                            name="courseTech"
-                                            rows="4"
-                                        ></textarea>
-                                    </div>
+                                    <textarea
+                                        onChange={handleChange}
+                                        className="form-control"
+                                        placeholder="Python, Java, C, Javascript"
+                                        id="remarks"
+                                        name="remarks"
+                                        rows="3"
+                                    ></textarea>
                                 </div>
 
-                                <hr/>
-                                <button type="submit" className="btn btn-primary">
-                                    اعمال تغییرات
-                                </button>
+                                {/* Submit */}
+                                <div className="d-flex justify-content-end pt-3">
+                                    <button
+                                        type="submit"
+                                        className="btn btn-dark px-4 fw-semibold"
+                                    >
+                                        ثبت دوره
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -199,3 +209,5 @@ function TeacherAddCourses() {
 }
 
 export default TeacherAddCourses;
+
+
