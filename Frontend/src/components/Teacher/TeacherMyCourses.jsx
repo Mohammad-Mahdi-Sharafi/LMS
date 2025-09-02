@@ -1,5 +1,5 @@
-import {Link, useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import TeacherSidebar from "./TeacherSidebar.jsx";
 
@@ -14,6 +14,7 @@ function TeacherMyCourses() {
     useEffect(() => {
         document.title = "Teacher My Courses";
         fetchCourses();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchCourses = () => {
@@ -24,24 +25,34 @@ function TeacherMyCourses() {
             .then(async (response) => {
                 const courses = response.data;
 
-                // 🔹 For each course, fetch detail to get total_enrolled_students
-                const withEnrollCounts = await Promise.all(
+                // 🔹 For each course, fetch detail to get total_enrolled_students + course_rating
+                const withDetails = await Promise.all(
                     courses.map(async (course) => {
                         try {
                             const detailRes = await axios.get(
                                 `${baseUrl}/teacher-course-detail/${course.id}`,
                                 { headers: { Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf" } }
                             );
-                            return { ...course, total_enrolled_students: detailRes.data.total_enrolled_students };
+
+                            return {
+                                ...course,
+                                total_enrolled_students: detailRes.data?.total_enrolled_students ?? 0,
+                                // 👇 Use the same field your CourseDetail uses
+                                course_rating:
+                                    detailRes.data?.course_rating !== null &&
+                                    detailRes.data?.course_rating !== undefined
+                                        ? Number(detailRes.data.course_rating)
+                                        : null,
+                            };
                         } catch (err) {
                             console.error("Error fetching details for course", course.id, err);
-                            return { ...course, total_enrolled_students: 0 };
+                            return { ...course, total_enrolled_students: 0, course_rating: null };
                         }
                     })
                 );
 
-                setCourseData(withEnrollCounts);
-                setTotalResult(withEnrollCounts.length);
+                setCourseData(withDetails);
+                setTotalResult(withDetails.length);
             })
             .catch((error) => {
                 console.error("Error fetching courses:", error);
@@ -62,6 +73,13 @@ function TeacherMyCourses() {
             .catch((error) => {
                 console.error("Error deleting course:", error);
             });
+    };
+
+    // Helper: display rating as "⭐ 4.2/5" or "—"
+    const renderRating = (value) => {
+        if (value === null || value === undefined || Number.isNaN(value)) return "—";
+        return `⭐ ${Number(value).toFixed(1)}/5`;
+        // Optionally you could render star icons instead
     };
 
     return (
@@ -95,7 +113,8 @@ function TeacherMyCourses() {
                                                 <th scope="col">📷 تصویر</th>
                                                 <th scope="col">🎓 عنوان</th>
                                                 <th scope="col">👨‍🏫 مدرس</th>
-                                                <th scope="col">تعداد ثبت نامی ها</th>
+                                                <th scope="col">👥 ثبت‌نامی‌ها</th>
+                                                <th scope="col">⭐ امتیاز</th>
                                                 <th scope="col">⚙️ مدیریت</th>
                                                 <th scope="col">❌ حذف</th>
                                             </tr>
@@ -111,7 +130,11 @@ function TeacherMyCourses() {
                                                             style={{ height: "70px", objectFit: "cover" }}
                                                         />
                                                     </td>
-                                                    <td className="fw-semibold">{course.title}</td>
+                                                    <td className="fw-semibold">
+                                                        <Link to={`/detail/${course.id}`} className="text-decoration-none">
+                                                            {course.title}
+                                                        </Link>
+                                                    </td>
                                                     <td>
                                                         <Link
                                                             to={`/teacher-detail/${course.teacher.id}`}
@@ -121,28 +144,39 @@ function TeacherMyCourses() {
                                                         </Link>
                                                     </td>
                                                     <td className="fw-semibold">
-                                                        <Link to={`/teacher-enrolled-students/${course.id}`} className="text-decoration-none fw-medium"
+                                                        <Link
+                                                            to={`/teacher-enrolled-students/${course.id}`}
+                                                            className="text-decoration-none fw-medium"
                                                         >
                                                             {course.total_enrolled_students ?? 0}
                                                         </Link>
+                                                    </td>
+                                                    <td className="fw-semibold">
+                                                        {renderRating(course.course_rating)}
                                                     </td>
                                                     <td>
                                                         <div className="d-flex flex-wrap gap-2">
                                                             <button
                                                                 className="btn btn-sm btn-outline-primary"
-                                                                onClick={() => navigate(`/teacher-add-chapters/${course.id}`)}
+                                                                onClick={() =>
+                                                                    navigate(`/teacher-add-chapters/${course.id}`)
+                                                                }
                                                             >
                                                                 ➕ فصل
                                                             </button>
                                                             <button
                                                                 className="btn btn-sm btn-outline-secondary"
-                                                                onClick={() => navigate(`/teacher-all-chapters/${course.id}`)}
+                                                                onClick={() =>
+                                                                    navigate(`/teacher-all-chapters/${course.id}`)
+                                                                }
                                                             >
                                                                 ✏️ فصل‌ها
                                                             </button>
                                                             <button
                                                                 className="btn btn-sm btn-outline-dark"
-                                                                onClick={() => navigate(`/teacher-edit-course/${course.id}`)}
+                                                                onClick={() =>
+                                                                    navigate(`/teacher-edit-course/${course.id}`)
+                                                                }
                                                             >
                                                                 ⚙️ ویرایش
                                                             </button>
@@ -171,5 +205,3 @@ function TeacherMyCourses() {
 }
 
 export default TeacherMyCourses;
-
-

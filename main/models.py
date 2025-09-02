@@ -6,11 +6,12 @@ from django.db.models import Q
 # teacher Model
 class Teacher(models.Model):
     full_name = models.CharField(max_length=100)
-    bio = models.TextField(max_length=100, null=True, blank=True)
+    bio = models.TextField(max_length=1000, null=True, blank=True)
     email = models.EmailField()
     password = models.CharField(max_length=100)
     qualification = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=100)
+    profile_image = models.ImageField(upload_to="teacher_profile_imgs/", null=True, blank=True)
     skills = models.TextField()
 
     class Meta:

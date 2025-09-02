@@ -31,8 +31,8 @@ function TeacherSidebar() {
                     ➕ اضافه کردن دوره
                 </Link>
                 <Link
-                    className={`list-group-item list-group-item-action ${isActive("/teacher-my-students")}`}
-                    to="/teacher-my-students"
+                    className={`list-group-item list-group-item-action ${isActive("/teacher-student-list")}`}
+                    to="/teacher-student-list"
                 >
                     👥 دانشجویان من
                 </Link>
@@ -60,4 +60,3 @@ function TeacherSidebar() {
 }
 
 export default TeacherSidebar;
-

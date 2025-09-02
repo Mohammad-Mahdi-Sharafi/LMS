@@ -43,7 +43,7 @@ function StudentLogin() {
             .catch(() => setErrorMsg("مشکلی پیش آمد. دوباره تلاش کنید."));
     };
 
-    let studentLoginStatus = localStorage.getItem("studentLoginStatus");
+    const studentLoginStatus = localStorage.getItem("studentLoginStatus");
     console.log(studentLoginStatus);
     // if (studentLoginStatus === "true") {
     //     window.location.href = "/student-dashboard";

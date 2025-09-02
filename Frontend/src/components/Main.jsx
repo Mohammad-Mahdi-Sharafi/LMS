@@ -8,9 +8,9 @@ import StudentRegister from "./Student/StudentRegister.jsx";
 import StudentLogin from "./Student/StudentLogin.jsx";
 import StudentLogout from "./Student/StudentLogout";
 import StudentDashboard from "./Student/StudentDashboard.jsx";
-import MyCourses from "./Student/MyCourses";
+import StudentMyCourses from "./Student/StudentMyCourses.jsx";
 import FavoriteCourses from "./Student/FavoriteCourses";
-import RecommendedCourses from "./Student/RecommendedCourses";
+import StudentRecommendedCourses from "./Student/StudentRecommendedCourses.jsx";
 import ProfileSettings from "./Student/ProfileSettings";
 import ChangePassword from "./Student/ChangePassword";
 import TeacherLogin from "./Teacher/TeacherLogin";
@@ -25,6 +25,7 @@ import TeacherSkillCourses from "./TeacherSkillCourses";
 import TeacherAddChapters from "./Teacher/TeacherAddChapter";
 import TeacherAllChapters from "./Teacher/TeacherAllChapters";
 import TeacherEditChapter from "./Teacher/TeacherEditChapter";
+import TeacherStudentList from "./Teacher/TeacherStudentList.jsx";
 import TeacherProfileSettings from "./Teacher/TeacherProfileSettings";
 import TeacherLogout from "./Teacher/TeacherLogout";
 import AllCourses from "./AllCourses";
@@ -46,11 +47,11 @@ function Main() {
                 <Route path="/student-logout" element={<StudentLogout/>}/>
                 <Route path="/student-register" element={<StudentRegister/>}/>
                 <Route path="/student-dashboard" element={<StudentDashboard/>}/>
-                <Route path="/student-my-courses" element={<MyCourses/>}/>
-                <Route path="/favorite-courses" element={<FavoriteCourses/>}/>
-                <Route path="/recommended-courses" element={<RecommendedCourses/>}/>
-                <Route path="/profile-settings" element={<ProfileSettings/>}/>
-                <Route path="/change-password" element={<ChangePassword/>}/>
+                <Route path="/student-my-courses" element={<StudentMyCourses/>}/>
+                <Route path="/student-favorite-courses" element={<FavoriteCourses/>}/>
+                <Route path="/student-recommended-courses" element={<StudentRecommendedCourses/>}/>
+                <Route path="/student-profile-settings" element={<ProfileSettings/>}/>
+                <Route path="/student-change-password" element={<ChangePassword/>}/>
                 <Route path="/teacher-login" element={<TeacherLogin/>}/>
                 <Route path="/teacher-register" element={<TeacherRegister/>}/>
                 <Route path="/teacher-dashboard" element={<TeacherDashboard/>}/>
@@ -62,6 +63,7 @@ function Main() {
                 <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters/>}/>
                 <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>
                 <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
+                <Route path="/teacher-student-list" element={<TeacherStudentList/>}/>
                 <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses/>}/>
                 <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
                 <Route path="/teacher-logout" element={<TeacherLogout/>}/>

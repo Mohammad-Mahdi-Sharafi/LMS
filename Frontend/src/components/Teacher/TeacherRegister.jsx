@@ -44,7 +44,7 @@ function TeacherRegister() {
                     },
                 })
                 .then((response) => {
-                    console.log(response.data);
+                    localStorage.setItem("teacherLoginStatus", "true")
                 })
                 .catch((error) => {
                     console.log(error);

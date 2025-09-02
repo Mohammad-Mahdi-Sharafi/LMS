@@ -17,6 +17,9 @@ urlpatterns = [
     path(route="student-enroll-course", view=views.StudentCourseEnrollmentCreateList.as_view(), name="student-enroll-course"),
     path(route="fetch-enroll-status/<int:student_id>/<int:course_id>", view=views.fetch_enroll_status, name="fetch-enroll-status"),
     path(route="fetch-enrolled-students/<int:course_id>", view=views.FetchEnrolledStudents.as_view(), name="fetch_enrolled_students"),
+    path(route="fetch-all-enrolled-students/<int:teacher_id>", view=views.FetchEnrolledStudents.as_view(), name="fetch_enrolled_students"),
     path(route="course-rating/<int:course_id>", view=views.CourseRatingListCreate.as_view(), name="course-rating"),
     path(route="fetch-rating-status/<int:student_id>/<int:course_id>", view=views.fetch_rating_status, name="fetch_rating_students"),
+    path(route="fetch-enrolled-courses/<int:student_id>", view=views.FetchEnrolledStudents.as_view(), name="fetch_enrolled_students-course"),
+    path(route="fetch-recommended-courses/<int:studentId>", view=views.CourseListCreate.as_view(), name="fetch_recommended_students-course"),
 ]

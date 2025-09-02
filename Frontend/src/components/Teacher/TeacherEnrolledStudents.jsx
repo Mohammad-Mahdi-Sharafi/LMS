@@ -29,24 +29,6 @@ function TeacherEnrolledStudents() {
             });
     };
 
-    const handleRemove = (studentId) => {
-        if (!window.confirm("آیا مطمئن هستید که می‌خواهید این دانشجو را حذف کنید؟")) return;
-
-        // Example delete endpoint — adjust to your backend
-        axios
-            .delete(`${baseUrl}/remove-enrollment/${course_id}/${studentId}/`, {
-                headers: {
-                    Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                },
-            })
-            .then(() => {
-                setStudentData((prev) => prev.filter((s) => s.id !== studentId));
-            })
-            .catch((error) => {
-                console.error("Error removing student:", error);
-            });
-    };
-
     return (
         <div className="container-fluid mt-4">
             <div className="row">
@@ -78,7 +60,7 @@ function TeacherEnrolledStudents() {
                                             <th scope="col">نام</th>
                                             <th scope="col">ایمیل</th>
                                             <th scope="col">نام کاربری</th>
-                                            <th scope="col">عمل</th>
+                                            <th scope="col">علاقه مندی ها</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -87,14 +69,7 @@ function TeacherEnrolledStudents() {
                                                 <td>{row.student.full_name}</td>
                                                 <td>{row.student.email}</td>
                                                 <td>{row.student.user_name}</td>
-                                                <td>
-                                                    <button
-                                                        className="btn btn-sm btn-danger"
-                                                        onClick={() => handleRemove(student.id)}
-                                                    >
-                                                        ❌ حذف
-                                                    </button>
-                                                </td>
+                                                <td>{row.student.interested_categories}</td>
                                             </tr>
                                         ))}
                                         </tbody>

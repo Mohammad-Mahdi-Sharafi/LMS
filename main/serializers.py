@@ -34,6 +34,7 @@ class TeacherSerializer(serializers.ModelSerializer):
             "password",
             "qualification",
             "phone_number",
+            "profile_image",
             "skills",
         ]
 
@@ -164,7 +165,7 @@ class StudentCourseEnrollSerializer(serializers.ModelSerializer):
             "student",
             "enrolled_time"
         ]
-        depth=1
+        depth = 2
 
 class CourseRatingSerializer(serializers.ModelSerializer):
     class Meta:
