@@ -4,13 +4,13 @@ import Footer from "./Footer";
 import About from "./About";
 import CourseDetail from "./CourseDetail";
 import TeacherDetail from "./TeacherDetail";
-import StudentRegister from "./Student/StudentRegister.jsx";
-import StudentLogin from "./Student/StudentLogin.jsx";
+import StudentRegister from "./Student/StudentRegister";
+import StudentLogin from "./Student/StudentLogin";
 import StudentLogout from "./Student/StudentLogout";
-import StudentDashboard from "./Student/StudentDashboard.jsx";
-import StudentMyCourses from "./Student/StudentMyCourses.jsx";
-import FavoriteCourses from "./Student/FavoriteCourses";
-import StudentRecommendedCourses from "./Student/StudentRecommendedCourses.jsx";
+import StudentDashboard from "./Student/StudentDashboard";
+import StudentMyCourses from "./Student/StudentMyCourses";
+import StudentFavoriteCourses from "./Student/StudentFavoriteCourses";
+import StudentRecommendedCourses from "./Student/StudentRecommendedCourses";
 import ProfileSettings from "./Student/ProfileSettings";
 import ChangePassword from "./Student/ChangePassword";
 import TeacherLogin from "./Teacher/TeacherLogin";
@@ -25,7 +25,8 @@ import TeacherSkillCourses from "./TeacherSkillCourses";
 import TeacherAddChapters from "./Teacher/TeacherAddChapter";
 import TeacherAllChapters from "./Teacher/TeacherAllChapters";
 import TeacherEditChapter from "./Teacher/TeacherEditChapter";
-import TeacherStudentList from "./Teacher/TeacherStudentList.jsx";
+import TeacherStudentList from "./Teacher/TeacherStudentList";
+import TeacherAddAssignment from "./Teacher/TeacherAddAssignment";
 import TeacherProfileSettings from "./Teacher/TeacherProfileSettings";
 import TeacherLogout from "./Teacher/TeacherLogout";
 import AllCourses from "./AllCourses";
@@ -48,7 +49,7 @@ function Main() {
                 <Route path="/student-register" element={<StudentRegister/>}/>
                 <Route path="/student-dashboard" element={<StudentDashboard/>}/>
                 <Route path="/student-my-courses" element={<StudentMyCourses/>}/>
-                <Route path="/student-favorite-courses" element={<FavoriteCourses/>}/>
+                <Route path="/student-favorite-courses" element={<StudentFavoriteCourses/>}/>
                 <Route path="/student-recommended-courses" element={<StudentRecommendedCourses/>}/>
                 <Route path="/student-profile-settings" element={<ProfileSettings/>}/>
                 <Route path="/student-change-password" element={<ChangePassword/>}/>
@@ -64,6 +65,7 @@ function Main() {
                 <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>
                 <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
                 <Route path="/teacher-student-list" element={<TeacherStudentList/>}/>
+                <Route path="/teacher-add-assignment/:teacher_id/:student_id" element={<TeacherAddAssignment/>}/>
                 <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses/>}/>
                 <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
                 <Route path="/teacher-logout" element={<TeacherLogout/>}/>

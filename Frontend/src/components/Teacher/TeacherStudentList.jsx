@@ -1,11 +1,13 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import TeacherSidebar from "./TeacherSidebar.jsx";
+import {useNavigate} from "react-router-dom";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
 function TeacherStudentsList() {
     const [studentData, setStudentData] = useState([]);
+    const navigate = useNavigate();
     const teacherId = localStorage.getItem("teacherId");
 
     useEffect(() => {
@@ -58,16 +60,33 @@ function TeacherStudentsList() {
                                         <thead className="table-light">
                                         <tr>
                                             <th scope="col">نام</th>
+                                            <th scope="col">ایمیل</th>
+                                            <th scope="col">نام کاربری</th>
                                             <th scope="col">دوره ثبت‌نام‌شده</th>
                                             <th scope="col">علاقه‌مندی‌ها</th>
+                                            <th scope="col">تمارین</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {studentData.map((row) => (
                                             <tr key={row.id}>
                                                 <td>{row.student?.full_name}</td>
+                                                <td>{row.student?.email}</td>
+                                                <td>{row.student?.user_name}</td>
                                                 <td>{row.course?.title}</td>
                                                 <td>{row.student?.interested_categories}</td>
+                                                <td>
+                                                    <button className="btn btn-sm btn-warning ms-2">
+                                                      📄 تمرین
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-success ms-2"
+                                                        onClick={()=>{navigate(`/teacher-add-assignment/${row.student?.id}/${teacherId}`)}}
+                                                    >
+                                                      ➕ تمرین جدید
+                                                    </button>
+
+                                                </td>
                                             </tr>
                                         ))}
                                         </tbody>
@@ -83,5 +102,3 @@ function TeacherStudentsList() {
 }
 
 export default TeacherStudentsList;
-
-

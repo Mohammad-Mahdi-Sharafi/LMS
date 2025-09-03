@@ -5,53 +5,25 @@ import axios from "axios";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
-function StudentRecommendedCourses() {
+function StudentFavoriteCourses() {
     const [courseData, setCourseData] = useState([]);
     const studentId = localStorage.getItem("studentId");
 
     useEffect(() => {
-        document.title = "Student Recommended Courses";
-        fetchCourses();
-    }, []);
-
-    const fetchCourses = () => {
+        document.title = "Student Favorite Courses";
         axios
-            .get(`${baseUrl}/fetch-recommended-courses/${studentId}`, {
+            .get(`${baseUrl}/fetch-favorite-course/${studentId}`, {
                 headers: {
                     Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                 },
             })
             .then((response) => {
-                const courses = response.data;
-
-                // For each course, fetch rating with plain .then()
-                courses.forEach((course, idx) => {
-                    axios
-                        .get(`${baseUrl}/teacher-course-detail/${course.id}`, {
-                            headers: { Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf" },
-                        })
-                        .then((res) => {
-                            courses[idx].course_rating = res.data.course_rating ?? null;
-                            setCourseData([...courses]); // update after each rating comes
-                        })
-                        .catch(() => {
-                            courses[idx].course_rating = null;
-                            setCourseData([...courses]);
-                        });
-                });
-
-                // set initial data quickly (without ratings yet)
-                setCourseData(courses);
+                setCourseData(response.data);
             })
             .catch((error) => {
-                console.error("Error fetching recommended courses:", error);
+                console.error("Error fetching favorite courses:", error);
             });
-    };
-
-    const renderRating = (value) => {
-        if (value === null || value === undefined || Number.isNaN(value)) return "—";
-        return `⭐ ${Number(value).toFixed(1)}/5`;
-    };
+    }, [studentId]);
 
     return (
         <div className="container-fluid mt-4">
@@ -61,12 +33,12 @@ function StudentRecommendedCourses() {
                     <StudentSidebar />
                 </aside>
 
-                {/* Courses Section */}
+                {/* Main Section */}
                 <section className="col-md-9 col-lg-10">
                     <div className="card shadow-sm border-0 rounded-3">
                         <div className="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
-                            <h5 className="mb-0 fw-bold">✨ دوره‌های پیشنهادی</h5>
-                            <span className="badge bg-success px-3 py-2 rounded-pill">
+                            <h5 className="mb-0 fw-bold">❤️ دوره‌های محبوب من</h5>
+                            <span className="badge bg-danger px-3 py-2 rounded-pill">
                                 {courseData.length} دوره
                             </span>
                         </div>
@@ -74,12 +46,10 @@ function StudentRecommendedCourses() {
                         <div className="card-body p-0">
                             {courseData.length === 0 ? (
                                 <div className="text-center text-muted py-5">
-                                    <h5>دوره پیشنهادی‌ای برای شما یافت نشد.</h5>
-                                    <p className="mb-3">
-                                        بر اساس علاقه‌مندی‌های شما به‌زودی پیشنهادهایی نمایش داده خواهد شد.
-                                    </p>
-                                    <Link to="/course-list" className="btn btn-outline-success">
-                                        مشاهده همه دوره‌ها
+                                    <h5>هنوز دوره‌ای به علاقه‌مندی‌ها اضافه نکرده‌اید.</h5>
+                                    <p className="mb-3">می‌توانید از لیست دوره‌ها دوره‌ای را به علاقه‌مندی اضافه کنید.</p>
+                                    <Link to="/course-list" className="btn btn-outline-danger">
+                                        مشاهده دوره‌ها
                                     </Link>
                                 </div>
                             ) : (
@@ -90,36 +60,37 @@ function StudentRecommendedCourses() {
                                                 <th>📷 تصویر</th>
                                                 <th>🎓 عنوان</th>
                                                 <th>👨‍🏫 مدرس</th>
-                                                <th>📂 تکنولوژی‌ها</th>
-                                                <th>⭐ امتیاز</th>
+                                                <th>📂 دسته‌بندی</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {courseData.map((course) => (
-                                                <tr key={course.id}>
+                                            {courseData.map((row, index) => (
+                                                <tr key={index}>
                                                     <td style={{ width: "120px" }}>
                                                         <img
-                                                            src={course.featured_image}
-                                                            alt={course.title}
+                                                            src={row.course.featured_image}
+                                                            alt={row.course.title}
                                                             className="img-fluid rounded shadow-sm"
                                                             style={{ height: "70px", objectFit: "cover" }}
                                                         />
                                                     </td>
                                                     <td className="fw-semibold">
-                                                        <Link to={`/detail/${course.id}`} className="text-decoration-none">
-                                                            {course.title}
+                                                        <Link
+                                                            to={`/detail/${row.course.id}`}
+                                                            className="text-decoration-none"
+                                                        >
+                                                            {row.course.title}
                                                         </Link>
                                                     </td>
                                                     <td>
                                                         <Link
-                                                            to={`/teacher-detail/${course.teacher.id}`}
+                                                            to={`/teacher-detail/${row.course.teacher.id}`}
                                                             className="text-decoration-none fw-medium"
                                                         >
-                                                            {course.teacher.full_name}
+                                                            {row.course.teacher.full_name}
                                                         </Link>
                                                     </td>
-                                                    <td>{course.technologies ?? "—"}</td>
-                                                    <td className="fw-semibold">{renderRating(course.course_rating)}</td>
+                                                    <td>{row.course.category?.title ?? "—"}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -134,4 +105,4 @@ function StudentRecommendedCourses() {
     );
 }
 
-export default StudentRecommendedCourses;
+export default StudentFavoriteCourses;

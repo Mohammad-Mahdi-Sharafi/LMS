@@ -16,6 +16,7 @@ function StudentMyCourses() {
 
     }, []);
 
+    // Fetch courses
     const fetchCourses = () => {
         axios
             .get(`${baseUrl}/fetch-enrolled-courses/${studentId}`, {

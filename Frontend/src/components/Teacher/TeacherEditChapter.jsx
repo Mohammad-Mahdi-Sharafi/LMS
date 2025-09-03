@@ -8,9 +8,9 @@ const baseUrl = "http://127.0.0.1:8000/api";
 function TeacherEditChapter() {
     const navigate = useNavigate();
     const {chapter_id} = useParams();
+    const course_id = localStorage.getItem("course_id");
 
     const [chapterData, setChapterData] = useState({
-        course: "",
         title: "",
         description: "",
         video: "",
@@ -51,7 +51,6 @@ function TeacherEditChapter() {
         event.preventDefault();
 
         const _formData = new FormData();
-        _formData.append("course", chapterData.course);
         _formData.append("title", chapterData.title);
         _formData.append("description", chapterData.description);
         if (chapterData.video instanceof File) {
@@ -67,7 +66,7 @@ function TeacherEditChapter() {
                 },
             })
             .then(() => {
-                navigate(`/teacher-all-chapters/${chapterData.course}`);
+                navigate(`/teacher-all-chapters/${course_id}`);
             })
             .catch((error) => {
                 console.error("Error updating chapter:", error);
@@ -190,4 +189,3 @@ function TeacherEditChapter() {
 }
 
 export default TeacherEditChapter;
-

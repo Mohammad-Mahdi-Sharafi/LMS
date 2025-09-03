@@ -79,7 +79,7 @@ function TeacherMyCourses() {
     const renderRating = (value) => {
         if (value === null || value === undefined || Number.isNaN(value)) return "—";
         return `⭐ ${Number(value).toFixed(1)}/5`;
-        // Optionally you could render star icons instead
+
     };
 
     return (

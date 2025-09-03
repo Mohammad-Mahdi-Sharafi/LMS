@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
-from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment, CourseRating
+from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment, CourseRating, \
+    StudentFavoriteCourse, StudentAssignment
 
 
 def absolute_media_url(request, field):
@@ -186,3 +187,39 @@ class CourseRatingSerializer(serializers.ModelSerializer):
         self.Meta.depth = 0
         if request and request.method == "GET":
             self.Meta.depth = 1
+
+
+class StudentFavoriteCourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentFavoriteCourse
+        fields = [
+            "id",
+            "course",
+            "student",
+            "status",
+        ]
+    def __init__(self, *args, **kwargs):
+        super(StudentFavoriteCourseSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get("request")
+        self.Meta.depth = 0
+        if request and request.method == "GET":
+            self.Meta.depth = 2
+
+# Student assignment serializer
+class StudentAssignmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentAssignment
+        fields = [
+            "id",
+            "teacher",
+            "student",
+            "title",
+            "detail",
+            "add_time",
+        ]
+    def __init__(self, *args, **kwargs):
+        super(StudentAssignmentSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get("request")
+        self.Meta.depth = 0
+        if request and request.method == "GET":
+            self.Meta.depth = 2

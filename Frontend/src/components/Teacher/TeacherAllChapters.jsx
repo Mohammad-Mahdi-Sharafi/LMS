@@ -9,6 +9,7 @@ const baseUrl = "http://127.0.0.1:8000/api";
 function TeacherAllChapters() {
     const navigate = useNavigate();
     const {course_id} = useParams();
+    localStorage.setItem("course_id", course_id);
     const [chapterData, setChapterData] = useState([]);
     const [totalResult, setTotalResult] = useState(0);
 

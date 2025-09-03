@@ -25,8 +25,8 @@ function StudentSidebar() {
                     📚 دوره‌های من
                 </Link>
                 <Link
-                    className={`list-group-item list-group-item-action ${isActive("/favorite-courses")}`}
-                    to="/favorite-courses"
+                    className={`list-group-item list-group-item-action ${isActive("/student-favorite-courses")}`}
+                    to="/student-favorite-courses"
                 >
                     ❤️ دوره‌های محبوب
                 </Link>

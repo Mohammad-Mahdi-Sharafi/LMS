@@ -1,11 +1,11 @@
-import {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
 function TeacherDetail() {
-    const {teacher_id} = useParams();
+    const { teacher_id } = useParams();
 
     const [teacherData, setTeacherData] = useState({});
     const [courseData, setCourseData] = useState([]);
@@ -18,16 +18,14 @@ function TeacherDetail() {
             Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
         };
 
-        async function load() {
-            try {
-                const [teacherRes, coursesRes] = await Promise.all([
-                    axios.get(`${baseUrl}/teacher/${teacher_id}`, {headers}),
-                    axios.get(`${baseUrl}/teacher-courses/${teacher_id}`, {headers}),
-                ]);
-
-                const teacher = teacherRes.data || {};
+        // Fetch teacher info
+        axios
+            .get(`${baseUrl}/teacher/${teacher_id}`, { headers })
+            .then((res) => {
+                const teacher = res.data || {};
                 setTeacherData(teacher);
 
+                // Derive skills (from API list or fallback string)
                 const providedSkillList = Array.isArray(teacher.skill_list)
                     ? teacher.skill_list
                     : [];
@@ -36,20 +34,26 @@ function TeacherDetail() {
                     providedSkillList.length > 0
                         ? providedSkillList
                         : (teacher.skills || "")
-                            .replace(/،/g, ",")
-                            .split(/[,\s]+/)
-                            .map((s) => s.trim())
-                            .filter(Boolean);
+                              .replace(/،/g, ",")
+                              .split(/[,\s]+/)
+                              .map((s) => s.trim())
+                              .filter(Boolean);
 
                 setSkillListData(derivedSkillList);
+            })
+            .catch((err) => {
+                console.error("Error fetching teacher detail:", err);
+            });
 
-                setCourseData(Array.isArray(coursesRes.data) ? coursesRes.data : []);
-            } catch (err) {
-                console.error("Error fetching teacher detail or courses:", err);
-            }
-        }
-
-        load();
+        // Fetch teacher courses
+        axios
+            .get(`${baseUrl}/teacher-courses/${teacher_id}`, { headers })
+            .then((res) => {
+                setCourseData(Array.isArray(res.data) ? res.data : []);
+            })
+            .catch((err) => {
+                console.error("Error fetching teacher courses:", err);
+            });
     }, [teacher_id]);
 
     return (
@@ -61,7 +65,7 @@ function TeacherDetail() {
                         src={teacherData.profile_image || "/vite.svg"}
                         alt={teacherData.full_name || "Teacher"}
                         className="img-fluid rounded shadow-sm"
-                        style={{maxHeight: "300px", objectFit: "cover"}}
+                        style={{ maxHeight: "300px", objectFit: "cover" }}
                     />
                 </div>
 
@@ -134,4 +138,3 @@ function TeacherDetail() {
 }
 
 export default TeacherDetail;
-

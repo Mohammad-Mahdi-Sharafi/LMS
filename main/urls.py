@@ -22,4 +22,9 @@ urlpatterns = [
     path(route="fetch-rating-status/<int:student_id>/<int:course_id>", view=views.fetch_rating_status, name="fetch_rating_students"),
     path(route="fetch-enrolled-courses/<int:student_id>", view=views.FetchEnrolledStudents.as_view(), name="fetch_enrolled_students-course"),
     path(route="fetch-recommended-courses/<int:studentId>", view=views.CourseListCreate.as_view(), name="fetch_recommended_students-course"),
+    path(route="student-add-favorite-course", view=views.StudentFavoriteCourseListCreate.as_view(), name="student-add-favorite-course"),
+    path(route="fetch-favorite-status/<int:student_id>/<int:course_id>", view=views.fetch_favorite_status, name="fetch-favorite-status"),
+    path(route="remove-favorite-course/<int:student_id>/<int:course_id>", view=views.remove_favorite_course, name="remove-favorite-course"),
+    path(route="fetch-favorite-course/<int:student_id>", view=views.StudentFavoriteCourseListCreate.as_view(), name="fetch-favorite-course"),
+    path(route="student-assignment/<int:teacher_id>/<int:student_id>", view=views.StudentAssignmentListCreate.as_view(), name="student-assignment"),
 ]

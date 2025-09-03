@@ -3,24 +3,12 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework import permissions
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import (
-    Teacher,
-    CourseCategory,
-    Course,
-    Chapter,
-    Student,
-    StudentCourseEnrollment,
-    CourseRating
-)
-from .serializers import (
-    TeacherSerializer,
-    CourseCategorySerializer,
-    CourseListSerializer,
-    CourseDetailSerializer,
-    ChapterSerializer,
-    StudentSerializer,
-    StudentCourseEnrollSerializer, CourseRatingSerializer,
-)
+from rest_framework.response import Response
+
+from .models import Teacher, CourseCategory, Course, Chapter, Student, StudentCourseEnrollment, CourseRating, StudentFavoriteCourse, StudentAssignment
+from .serializers import TeacherSerializer, CourseCategorySerializer, CourseListSerializer, CourseDetailSerializer, \
+    ChapterSerializer, StudentSerializer, StudentCourseEnrollSerializer, CourseRatingSerializer, \
+    StudentFavoriteCourseSerializer, StudentAssignmentSerializer
 
 
 class TeacherListCreate(ListCreateAPIView):
@@ -215,3 +203,46 @@ def fetch_rating_status(request, student_id, course_id):
         return JsonResponse({"bool": True})
     else:
         return JsonResponse({"bool": False})
+
+class StudentFavoriteCourseListCreate(ListCreateAPIView):
+    queryset = StudentFavoriteCourse.objects.all()
+    serializer_class = StudentFavoriteCourseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        student_id = request.data.get("student")
+        course_id = request.data.get("course")
+
+        favorite, created = StudentFavoriteCourse.objects.update_or_create(
+            student_id=student_id,
+            course_id=course_id,
+            defaults={"status": request.data.get("status", True)},
+        )
+        serializer = self.get_serializer(favorite)
+        return Response(serializer.data)
+
+@csrf_exempt
+def fetch_favorite_status(request, student_id, course_id):
+    exists = StudentFavoriteCourse.objects.filter(
+        student_id=student_id, course_id=course_id, status=True
+    ).exists()
+    return JsonResponse({"bool": exists})
+
+@csrf_exempt
+def remove_favorite_course(request, student_id, course_id):
+    updated = StudentFavoriteCourse.objects.filter(
+        student_id=student_id, course_id=course_id
+    ).update(status=False)
+    return JsonResponse({"bool": bool(updated)})
+
+class StudentAssignmentListCreate(ListCreateAPIView):
+    queryset = StudentAssignment.objects.all()
+    serializer_class = StudentAssignmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        student_id = self.kwargs['student_id']
+        teacher_id = self.kwargs['teacher_id']
+        student = Student.objects.get(id=student_id)
+        teacher = Teacher.objects.get(id=teacher_id)
+        return StudentAssignment.objects.filter(student=student, teacher=teacher)
