@@ -76,7 +76,10 @@ function TeacherStudentsList() {
                                                 <td>{row.course?.title}</td>
                                                 <td>{row.student?.interested_categories}</td>
                                                 <td>
-                                                    <button className="btn btn-sm btn-warning ms-2">
+                                                    <button
+                                                        className="btn btn-sm btn-warning ms-2"
+                                                        onClick={()=>{navigate(`/teacher-show-assignment/${row.student?.id}/${teacherId}`)}}
+                                                    >
                                                       📄 تمرین
                                                     </button>
                                                     <button

@@ -13,6 +13,7 @@ urlpatterns = [
     path(route="course-chapters/<int:course_id>", view=views.CourseChapterList.as_view(), name="course-chapter-list"),
     path(route="chapter-detail/<int:pk>", view=views.TeacherChapterDetailView.as_view(), name="chapter-detail"),
     path(route="student", view=views.StudentListCreate.as_view(), name="student"),
+    path(route="student/<int:pk>", view=views.StudentDetailView.as_view(), name="student-detail"),
     path(route="student-login", view=views.student_login, name="student-login"),
     path(route="student-enroll-course", view=views.StudentCourseEnrollmentCreateList.as_view(), name="student-enroll-course"),
     path(route="fetch-enroll-status/<int:student_id>/<int:course_id>", view=views.fetch_enroll_status, name="fetch-enroll-status"),
@@ -27,4 +28,6 @@ urlpatterns = [
     path(route="remove-favorite-course/<int:student_id>/<int:course_id>", view=views.remove_favorite_course, name="remove-favorite-course"),
     path(route="fetch-favorite-course/<int:student_id>", view=views.StudentFavoriteCourseListCreate.as_view(), name="fetch-favorite-course"),
     path(route="student-assignment/<int:teacher_id>/<int:student_id>", view=views.StudentAssignmentListCreate.as_view(), name="student-assignment"),
+    path(route="student-show-assignment/<int:student_id>", view=views.StudentShowAssignmentListCreate.as_view(), name="student-show-assignment"),
+    path(route="update-assignment/<int:pk>", view=views.StudentUpdateAssignment.as_view(), name="update-assignment"),
 ]

@@ -98,10 +98,13 @@ class Chapter(models.Model):
 # Student
 class Student(models.Model):
     full_name = models.CharField(max_length=100)
+    bio = models.TextField(max_length=1000, null=True, blank=True)
     user_name = models.CharField(max_length=100, null=True)
     email = models.EmailField()
     password = models.CharField(max_length=100)
+    profile_image = models.ImageField(upload_to="student_profile_imgs/", null=True, blank=True)
     interested_categories = models.TextField()
+    phone_number = models.CharField(max_length=100, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "5. Students"
@@ -153,6 +156,7 @@ class StudentAssignment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=200)
     detail = models.TextField(null=True)
+    status = models.BooleanField(default=False, null=True)
     add_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -160,3 +164,18 @@ class StudentAssignment(models.Model):
 
     class Meta:
         verbose_name_plural = "9. Student Assignment"
+
+
+# notifications model
+
+class Notification(models.Model):
+    teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
+    notification_for = models.CharField(max_length=200, verbose_name="Notification for")
+    notification_subject = models.CharField(max_length=200, verbose_name="Notification subject", null=True)
+    notification_created_time = models.DateTimeField(auto_now_add=True)
+    notification_read_status = models.BooleanField(default=False, verbose_name="Notification status")
+
+    class Meta:
+        verbose_name_plural = "10. Notification"
+

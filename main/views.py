@@ -134,6 +134,11 @@ class StudentListCreate(ListCreateAPIView):
     serializer_class = StudentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+class StudentDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
 
 @csrf_exempt
 def student_login(request):
@@ -246,3 +251,19 @@ class StudentAssignmentListCreate(ListCreateAPIView):
         student = Student.objects.get(id=student_id)
         teacher = Teacher.objects.get(id=teacher_id)
         return StudentAssignment.objects.filter(student=student, teacher=teacher)
+
+class StudentShowAssignmentListCreate(ListCreateAPIView):
+    queryset = StudentAssignment.objects.all()
+    serializer_class = StudentAssignmentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        student_id = self.kwargs['student_id']
+        student = Student.objects.get(id=student_id)
+        return StudentAssignment.objects.filter(student=student)
+
+class StudentUpdateAssignment(RetrieveUpdateDestroyAPIView):
+    queryset = StudentAssignment.objects.all()
+    serializer_class = StudentAssignmentSerializer
+
+

@@ -11,7 +11,7 @@ function CourseDetail() {
     const {course_id} = useParams();
     const studentId = localStorage.getItem("studentId");
 
-    // State
+    // Data
     const [courseData, setCourseData] = useState({});
     const [teacherData, setTeacherData] = useState({});
     const [chapterData, setChapterData] = useState([]);
@@ -19,18 +19,61 @@ function CourseDetail() {
     const [techList, setTechList] = useState([]);
     const [rating, setRating] = useState(0);
 
+    // Status
     const [studentLoginStatus, setStudentLoginStatus] = useState("");
     const [enrollStatus, setEnrollStatus] = useState("");
     const [ratingStatus, setRatingStatus] = useState("");
     const [favoriteStatus, setFavoriteStatus] = useState(false);
 
+    // Forms
     const [ratingData, setRatingData] = useState({rating: "", review: ""});
 
-    // ---------------------- FETCH DATA ----------------------
+    // Video modal state
+    const [activeChapter, setActiveChapter] = useState(null); // {title, video?.url, ...}
+
+    // ---------- Helpers ----------
+    const fullUrl = (maybeRelative) => {
+        if (!maybeRelative) return "";
+        return maybeRelative.startsWith("http") ? maybeRelative : `${sideUrl}${maybeRelative}`;
+    };
+
+    const toYouTubeEmbed = (url) => {
+        if (!url) return null;
+        try {
+            const u = new URL(url);
+            // https://www.youtube.com/watch?v=ID or youtu.be/ID
+            if (u.hostname.includes("youtube.com")) {
+                const v = u.searchParams.get("v");
+                return v ? `https://www.youtube.com/embed/${v}` : null;
+            }
+            if (u.hostname === "youtu.be") {
+                const id = u.pathname.replace("/", "");
+                return id ? `https://www.youtube.com/embed/${id}` : null;
+            }
+        } catch {
+        }
+        return null;
+    };
+
+    const toVimeoEmbed = (url) => {
+        if (!url) return null;
+        try {
+            const u = new URL(url);
+            if (u.hostname.includes("vimeo.com")) {
+                const id = u.pathname.split("/").filter(Boolean).pop();
+                return id ? `https://player.vimeo.com/video/${id}` : null;
+            }
+        } catch {
+        }
+        return null;
+    };
+
+    const isFileVideo = (url) => /\.(mp4|webm|ogg)(\?.*)?$/i.test(url || "");
+
+    // ---------- Effects ----------
     useEffect(() => {
         document.title = "Course Detail";
 
-        // Fetch course detail
         axios
             .get(`${baseUrl}/teacher-course-detail/${course_id}`, {
                 headers: {Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf"},
@@ -44,38 +87,39 @@ function CourseDetail() {
                 if (res.data.course_rating) setRating(res.data.course_rating);
             });
 
-        // Check login
         if (localStorage.getItem("studentLoginStatus") === "true") {
             setStudentLoginStatus("success");
         }
 
         if (studentId) {
-            // Check enrollment
             axios
                 .get(`${baseUrl}/fetch-enroll-status/${studentId}/${course_id}`, {
                     headers: {Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf"},
                 })
-                .then((res) => {
-                    if (res.data.bool) setEnrollStatus("success");
-                });
+                .then((res) => res.data.bool && setEnrollStatus("success"));
 
-            // Check rating
             axios
                 .get(`${baseUrl}/fetch-rating-status/${studentId}/${course_id}`, {
                     headers: {Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf"},
                 })
-                .then((res) => {
-                    if (res.data.bool) setRatingStatus("success");
-                });
+                .then((res) => res.data.bool && setRatingStatus("success"));
 
-            // Check favorite
             axios
                 .get(`${baseUrl}/fetch-favorite-status/${studentId}/${course_id}`)
-                .then((res) => setFavoriteStatus(res.data.bool));
+                .then((res) => setFavoriteStatus(!!res.data.bool));
         }
     }, [course_id, studentId]);
 
-    // ---------------------- HANDLERS ----------------------
+    // Close modal => stop playback by unmounting player
+    useEffect(() => {
+        const modalEl = document.getElementById("videoModal");
+        if (!modalEl) return;
+        const onHidden = () => setActiveChapter(null);
+        modalEl.addEventListener("hidden.bs.modal", onHidden);
+        return () => modalEl.removeEventListener("hidden.bs.modal", onHidden);
+    }, []);
+
+    // ---------- Handlers ----------
     const goToLogin = () => navigate("/student-login");
 
     const enrollCourse = (e) => {
@@ -135,25 +179,18 @@ function CourseDetail() {
     };
 
     const toggleFavorite = () => {
-        if (!studentId) {
-            goToLogin();
-            return;
-        }
-
+        if (!studentId) return goToLogin();
         if (favoriteStatus) {
-            // Remove favorite
             axios
                 .delete(`${baseUrl}/remove-favorite-course/${studentId}/${course_id}`, {
                     headers: {Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf"},
                 })
                 .then(() => setFavoriteStatus(false));
         } else {
-            // Add favorite
             const formData = new FormData();
             formData.append("course", course_id);
             formData.append("student", studentId);
             formData.append("status", "True");
-
             axios
                 .post(`${baseUrl}/student-add-favorite-course`, formData, {
                     headers: {Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf"},
@@ -162,7 +199,42 @@ function CourseDetail() {
         }
     };
 
-    // ---------------------- RENDER ----------------------
+    // ---------- Renderers ----------
+    const renderPlayer = () => {
+        if (!activeChapter) return null;
+
+        // Try to read common shapes: chapter.video?.url OR chapter.video_url OR chapter.video
+        const raw = activeChapter?.video?.url || activeChapter?.video_url || activeChapter?.video || "";
+        const url = fullUrl(raw);
+
+        const yt = toYouTubeEmbed(url);
+        const vimeo = toVimeoEmbed(url);
+        const showIframe = yt || vimeo || (!isFileVideo(url) && url);
+        const iframeSrc = yt || vimeo || url;
+
+        return (
+            <>
+                {showIframe ? (
+                    <div className="ratio ratio-16x9">
+                        <iframe
+                            src={iframeSrc}
+                            title={activeChapter.title || "Course video"}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                        />
+                    </div>
+                ) : (
+                    <video
+                        className="w-100 rounded-2"
+                        controls
+                        controlsList="nodownload"
+                        src={url}
+                    />
+                )}
+            </>
+        );
+    };
+
     return (
         <div className="container-fluid p-0">
             {/* Hero */}
@@ -178,6 +250,7 @@ function CourseDetail() {
                 <div className="container h-100 d-flex flex-column justify-content-center">
                     <h1 className="fw-bold">{courseData.title}</h1>
                     <p className="lead">{courseData.description}</p>
+
                     <div>
                         {techList.map((tech, i) => (
                             <Link key={i} to={`/category/${tech.trim()}`} className="badge bg-warning text-dark me-2">
@@ -186,7 +259,6 @@ function CourseDetail() {
                         ))}
                     </div>
 
-                    {/* Actions */}
                     <div className="mt-3">
                         {studentLoginStatus === "success" && enrollStatus !== "success" && (
                             <button onClick={enrollCourse} className="btn btn-lg btn-success shadow">
@@ -292,47 +364,50 @@ function CourseDetail() {
                     <h5 className="card-header bg-dark text-white">فصل‌های دوره</h5>
                     {enrollStatus === "success" ? (
                         <ul className="list-group list-group-flush">
-                            {chapterData.map((chapter, idx) => {
-                                const modalId = `videoModal-${idx}`;
-                                return (
-                                    <li key={chapter.id || idx}
-                                        className="list-group-item d-flex justify-content-between">
-                                        <div>
-                                            <h6 className="mb-1">{chapter.title}</h6>
-                                            <small className="text-muted">{chapter.description}</small>
-                                        </div>
-                                        <button className="btn btn-outline-dark btn-sm" data-bs-toggle="modal"
-                                                data-bs-target={`#${modalId}`}>
-                                            مشاهده ویدیو
-                                        </button>
-
-                                        {/* Video Modal */}
-                                        <div className="modal fade" id={modalId} tabIndex="-1" aria-hidden="true">
-                                            <div className="modal-dialog modal-xl">
-                                                <div className="modal-content">
-                                                    <div className="modal-header">
-                                                        <h5 className="modal-title">{chapter.title}</h5>
-                                                        <button type="button" className="btn-close"
-                                                                data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div className="modal-body">
-                                                        <div className="ratio ratio-16x9">
-                                                            <iframe src={chapter.video?.url} title={chapter.title}
-                                                                    allowFullScreen></iframe>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                            {chapterData.map((chapter, idx) => (
+                                <li key={chapter.id || idx}
+                                    className="list-group-item d-flex justify-content-between align-items-start">
+                                    <div className="me-3">
+                                        <h6 className="mb-1">{chapter.title}</h6>
+                                        <small className="text-muted">{chapter.description}</small>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="btn btn-outline-dark btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#videoModal"
+                                        onClick={() => setActiveChapter(chapter)}
+                                    >
+                                        مشاهده ویدیو
+                                    </button>
+                                </li>
+                            ))}
                         </ul>
                     ) : (
                         <div className="card-body text-center text-muted">
                             برای مشاهده فصل‌های دوره ابتدا باید ثبت‌نام کنید.
                         </div>
                     )}
+                </div>
+
+                {/* Shared Video Modal */}
+                <div className="modal fade" id="videoModal" tabIndex="-1" aria-hidden="true">
+                    <div className="modal-dialog modal-xl modal-dialog-centered">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">{activeChapter?.title || "ویدیو"}</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                {activeChapter ? (
+                                    renderPlayer()
+                                ) : (
+                                    <div className="ratio ratio-16x9 bg-light rounded-2"/>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Related Courses */}
@@ -343,7 +418,11 @@ function CourseDetail() {
                             <div className="card h-100 border-0 shadow-sm hover-shadow">
                                 <Link to={`/detail/${course.id}`}>
                                     <img
-                                        src={course.featured_image?.startsWith("http") ? course.featured_image : `${sideUrl}${course.featured_image}`}
+                                        src={
+                                            course.featured_image?.startsWith("http")
+                                                ? course.featured_image
+                                                : `${sideUrl}${course.featured_image}`
+                                        }
                                         className="card-img-top"
                                         alt={course.title}
                                     />

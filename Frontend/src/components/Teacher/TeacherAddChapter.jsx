@@ -50,7 +50,7 @@ function TeacherAddChapters() {
                     headers: {
                         Authorization:
                             "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
-                        "content-type": "multipart/form-data",
+                            "content-type": "multipart/form-data",
                     },
                 })
                 .then(() => {

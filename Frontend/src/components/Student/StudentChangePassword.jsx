@@ -1,36 +1,35 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import TeacherSidebar from "./TeacherSidebar.jsx";
+import StudentSidebar from "./StudentSidebar.jsx";
 import Swal from "sweetalert2";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
-function TeacherChangePassword() {
-    const teacherId = localStorage.getItem("teacherId");
+function StudentChangePassword() {
+    const studentId = localStorage.getItem("studentId");
 
-    const [teacherData, setTeacherData] = useState(null); // store existing teacher
+    const [studentData, setStudentData] = useState(null);
     const [formData, setFormData] = useState({
         old_password: "",
         new_password: "",
         confirm_password: "",
     });
 
-    // Fetch current teacher details once
+    // Fetch current student details
     useEffect(() => {
+        document.title = "Student Change Password";
 
-        document.title = "Teacher Change Password";
-
-        if (teacherId) {
+        if (studentId) {
             axios
-                .get(`${baseUrl}/teacher/${teacherId}`, {
+                .get(`${baseUrl}/student/${studentId}`, {
                     headers: {
                         Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                     },
                 })
-                .then((res) => setTeacherData(res.data))
-                .catch((err) => console.error("Error fetching teacher:", err));
+                .then((res) => setStudentData(res.data))
+                .catch((err) => console.error("Error fetching student:", err));
         }
-    }, [teacherId]);
+    }, [studentId]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -49,33 +48,32 @@ function TeacherChangePassword() {
             return;
         }
 
-        if (!teacherData) {
+        if (!studentData) {
             Swal.fire({
                 icon: "error",
                 title: "خطا",
-                text: "اطلاعات مدرس بارگذاری نشد.",
+                text: "اطلاعات دانشجو بارگذاری نشد.",
                 confirmButtonColor: "#d33",
             });
             return;
         }
 
-        // Construct full data with previous teacher info + new password
+        // Construct full data with previous student info + new password
         const data = new FormData();
-        data.append("full_name", teacherData.full_name);
-        data.append("bio", teacherData.bio || "");
-        data.append("email", teacherData.email);
-        data.append("password", formData.new_password); // only password changes
-        data.append("qualification", teacherData.qualification || "");
-        data.append("phone_number", teacherData.phone_number || "");
-        data.append("skills", teacherData.skills || "");
+        data.append("full_name", studentData.full_name);
+        data.append("bio", studentData.bio || "");
+        data.append("user_name", studentData.user_name || "");
+        data.append("email", studentData.email);
+        data.append("password", formData.new_password);
+        data.append("interested_categories", studentData.interested_categories || "");
+        data.append("phone_number", studentData.phone_number || "");
 
-        // keep profile_image unchanged
-        if (teacherData.profile_image) {
-            data.append("profile_image", teacherData.profile_image);
+        if (studentData.profile_image) {
+            data.append("profile_image", studentData.profile_image);
         }
 
         axios
-            .put(`${baseUrl}/teacher/${teacherId}`, data, {
+            .put(`${baseUrl}/student/${studentId}`, data, {
                 headers: {
                     Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
                     "Content-Type": "multipart/form-data",
@@ -110,7 +108,7 @@ function TeacherChangePassword() {
             <div className="row">
                 {/* Sidebar */}
                 <aside className="col-md-3 col-lg-2 mb-4">
-                    <TeacherSidebar />
+                    <StudentSidebar />
                 </aside>
 
                 {/* Change Password */}
@@ -179,4 +177,4 @@ function TeacherChangePassword() {
     );
 }
 
-export default TeacherChangePassword;
+export default StudentChangePassword;

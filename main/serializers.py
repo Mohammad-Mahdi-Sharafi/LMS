@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Q
 from main.models import Teacher, Chapter, CourseCategory, Course, Student, StudentCourseEnrollment, CourseRating, \
-    StudentFavoriteCourse, StudentAssignment
+    StudentFavoriteCourse, StudentAssignment, Notification
 
 
 def absolute_media_url(request, field):
@@ -151,10 +151,13 @@ class StudentSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "bio",
             "email",
             "user_name",
             "password",
-            "interested_categories"
+            "profile_image",
+            "interested_categories",
+            "phone_number"
         ]
 
 class StudentCourseEnrollSerializer(serializers.ModelSerializer):
@@ -215,6 +218,7 @@ class StudentAssignmentSerializer(serializers.ModelSerializer):
             "student",
             "title",
             "detail",
+            "status",
             "add_time",
         ]
     def __init__(self, *args, **kwargs):
@@ -223,3 +227,16 @@ class StudentAssignmentSerializer(serializers.ModelSerializer):
         self.Meta.depth = 0
         if request and request.method == "GET":
             self.Meta.depth = 2
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = [
+            "id",
+            "teacher",
+            "student",
+            "notification_subject",
+            "notification_for",
+            "notification_created_time",
+            "notification_read_status",
+        ]

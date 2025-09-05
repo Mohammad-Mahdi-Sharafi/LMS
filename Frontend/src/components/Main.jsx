@@ -11,8 +11,9 @@ import StudentDashboard from "./Student/StudentDashboard";
 import StudentMyCourses from "./Student/StudentMyCourses";
 import StudentFavoriteCourses from "./Student/StudentFavoriteCourses";
 import StudentRecommendedCourses from "./Student/StudentRecommendedCourses";
-import ProfileSettings from "./Student/ProfileSettings";
-import ChangePassword from "./Student/ChangePassword";
+import StudentAssignments from "./Student/StudentAssignments";
+import StudentProfileSettings from "./Student/StudentProfileSettings.jsx";
+import StudentChangePassword from "./Student/StudentChangePassword.jsx";
 import TeacherLogin from "./Teacher/TeacherLogin";
 import TeacherRegister from "./Teacher/TeacherRegister";
 import TeacherDashboard from "./Teacher/TeacherDashboard";
@@ -27,6 +28,7 @@ import TeacherAllChapters from "./Teacher/TeacherAllChapters";
 import TeacherEditChapter from "./Teacher/TeacherEditChapter";
 import TeacherStudentList from "./Teacher/TeacherStudentList";
 import TeacherAddAssignment from "./Teacher/TeacherAddAssignment";
+import TeacherShowAssignment from "./Teacher/TeacherShowAssignment";
 import TeacherProfileSettings from "./Teacher/TeacherProfileSettings";
 import TeacherLogout from "./Teacher/TeacherLogout";
 import AllCourses from "./AllCourses";
@@ -51,8 +53,9 @@ function Main() {
                 <Route path="/student-my-courses" element={<StudentMyCourses/>}/>
                 <Route path="/student-favorite-courses" element={<StudentFavoriteCourses/>}/>
                 <Route path="/student-recommended-courses" element={<StudentRecommendedCourses/>}/>
-                <Route path="/student-profile-settings" element={<ProfileSettings/>}/>
-                <Route path="/student-change-password" element={<ChangePassword/>}/>
+                <Route path="/student-show-assignment" element={<StudentAssignments/>}/>
+                <Route path="/student-profile-settings" element={<StudentProfileSettings/>}/>
+                <Route path="/student-change-password" element={<StudentChangePassword/>}/>
                 <Route path="/teacher-login" element={<TeacherLogin/>}/>
                 <Route path="/teacher-register" element={<TeacherRegister/>}/>
                 <Route path="/teacher-dashboard" element={<TeacherDashboard/>}/>
@@ -66,6 +69,7 @@ function Main() {
                 <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
                 <Route path="/teacher-student-list" element={<TeacherStudentList/>}/>
                 <Route path="/teacher-add-assignment/:teacher_id/:student_id" element={<TeacherAddAssignment/>}/>
+                <Route path="/teacher-show-assignment/:teacher_id/:student_id" element={<TeacherShowAssignment/>}/>
                 <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses/>}/>
                 <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
                 <Route path="/teacher-logout" element={<TeacherLogout/>}/>

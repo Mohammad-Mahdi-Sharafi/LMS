@@ -37,20 +37,26 @@ function StudentSidebar() {
                     🌟 دوره‌های پیشنهادی
                 </Link>
                 <Link
-                    className={`list-group-item list-group-item-action ${isActive("/profile-settings")}`}
-                    to="/profile-settings"
+                    className={`list-group-item list-group-item-action ${isActive("/student-show-assignment")}`}
+                    to="/student-show-assignment"
+                >
+                    📄  تمارین من <span className="float-start badge bg-warning">123</span>
+                </Link>
+                <Link
+                    className={`list-group-item list-group-item-action ${isActive("/student-profile-settings")}`}
+                    to="/student-profile-settings"
                 >
                     ⚙️ تنظیمات
                 </Link>
                 <Link
-                    className={`list-group-item list-group-item-action ${isActive("/change-password")}`}
-                    to="/change-password"
+                    className={`list-group-item list-group-item-action ${isActive("/student-change-password")}`}
+                    to="/student-change-password"
                 >
                     🔑 تغییر رمز عبور
                 </Link>
                 <Link
-                    className={`list-group-item list-group-item-action text-danger fw-bold ${isActive("/user-login")}`}
-                    to="/user-login"
+                    className={`list-group-item list-group-item-action text-danger fw-bold ${isActive("/student-logout")}`}
+                    to="/student-logout"
                 >
                     🚪 خروج
                 </Link>
