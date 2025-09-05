@@ -68,8 +68,8 @@ function StudentChangePassword() {
         data.append("interested_categories", studentData.interested_categories || "");
         data.append("phone_number", studentData.phone_number || "");
 
-        if (studentData.profile_image) {
-            data.append("profile_image", studentData.profile_image);
+        if (studentData.profile_image instanceof File) {
+            formData.append("profile_image", studentData.profile_image);
         }
 
         axios

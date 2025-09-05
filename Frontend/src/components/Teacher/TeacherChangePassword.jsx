@@ -70,8 +70,8 @@ function TeacherChangePassword() {
         data.append("skills", teacherData.skills || "");
 
         // keep profile_image unchanged
-        if (teacherData.profile_image) {
-            data.append("profile_image", teacherData.profile_image);
+        if (teacherData.profile_image instanceof File) {
+            formData.append("profile_image", teacherData.profile_image);
         }
 
         axios
