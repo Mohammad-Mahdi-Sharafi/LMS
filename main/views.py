@@ -1,14 +1,16 @@
 from django.db.models import Q
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from django.utils.decorators import method_decorator
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
 from rest_framework import permissions
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 
-from .models import Teacher, CourseCategory, Course, Chapter, Student, StudentCourseEnrollment, CourseRating, StudentFavoriteCourse, StudentAssignment
+from .models import Teacher, CourseCategory, Course, Chapter, Student, StudentCourseEnrollment, CourseRating, \
+    StudentFavoriteCourse, StudentAssignment, Notification
 from .serializers import TeacherSerializer, CourseCategorySerializer, CourseListSerializer, CourseDetailSerializer, \
     ChapterSerializer, StudentSerializer, StudentCourseEnrollSerializer, CourseRatingSerializer, \
-    StudentFavoriteCourseSerializer, StudentAssignmentSerializer
+    StudentFavoriteCourseSerializer, StudentAssignmentSerializer, NotificationSerializer
 
 
 class TeacherListCreate(ListCreateAPIView):
@@ -267,3 +269,17 @@ class StudentUpdateAssignment(RetrieveUpdateDestroyAPIView):
     serializer_class = StudentAssignmentSerializer
 
 
+class NotificationListCreate(ListCreateAPIView):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        student_id = self.kwargs.get("student_id")
+        student = get_object_or_404(Student, id=student_id)
+
+        return Notification.objects.filter(
+            student=student,
+            notification_for="student",
+            notification_subject="assignment",
+            notification_read_status=False
+        )

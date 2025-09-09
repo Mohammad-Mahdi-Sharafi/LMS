@@ -1,10 +1,32 @@
 import { Link, useLocation } from "react-router-dom";
+import {useState, useEffect} from "react";
+import axios from "axios";
+
+const baseUrl = "http://127.0.0.1:8000/api";
 
 function StudentSidebar() {
     const location = useLocation();
+    const [notifData, setNotifData] = useState([]);
+    const studentId = localStorage.getItem("studentId");
 
     // highlight active menu
     const isActive = (path) => (location.pathname === path ? "active" : "");
+
+    useEffect(() => {
+        try{
+            axios.get(`${baseUrl}/student/fetch-all-notifications/${studentId}`, {
+                headers: {
+                        Authorization: "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    }
+                })
+                .then((response) => {
+                    console.log(response);
+                    setNotifData(response.data);
+                });
+        }catch(error){
+            console.log(error);
+        }
+    }, [studentId]);
 
     return (
         <div className="card shadow-sm border-0 rounded-3">
@@ -40,7 +62,7 @@ function StudentSidebar() {
                     className={`list-group-item list-group-item-action ${isActive("/student-show-assignment")}`}
                     to="/student-show-assignment"
                 >
-                    📄  تمارین من <span className="float-start badge bg-warning">123</span>
+                    📄  تمارین من <span className="float-start badge bg-warning">{notifData.length}</span>
                 </Link>
                 <Link
                     className={`list-group-item list-group-item-action ${isActive("/student-profile-settings")}`}

@@ -13,4 +13,4 @@ admin.site.register(models.StudentAssignment)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ["id", "notification_subject", "notification_for", "notification_read_status"]
 
-admin.site.register(models.Notification)
+admin.site.register(models.Notification, NotificationAdmin)

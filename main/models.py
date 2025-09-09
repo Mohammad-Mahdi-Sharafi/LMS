@@ -167,7 +167,6 @@ class StudentAssignment(models.Model):
 
 
 # notifications model
-
 class Notification(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True)
