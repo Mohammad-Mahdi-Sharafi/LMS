@@ -50,7 +50,7 @@ function Header() {
                 مدرس
               </span>
               <ul className="dropdown-menu dropdown-menu-dark shadow">
-                {teacherLoginStatus !== "true" && (
+                {teacherLoginStatus !== "true" ? (
                   <>
                     <li>
                       <Link className="dropdown-item" to="/teacher-login">
@@ -62,15 +62,21 @@ function Header() {
                         ثبت نام
                       </Link>
                     </li>
-                    <li><hr className="dropdown-divider" /></li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/teacher-dashboard">
+                        داشبورد
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/teacher-logout">
+                        خروج
+                      </Link>
+                    </li>
                   </>
                 )}
-                <li>
-                  <Link className="dropdown-item" to="/teacher-dashboard">داشبورد</Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/teacher-logout">خروج</Link>
-                </li>
               </ul>
             </li>
 
@@ -90,7 +96,7 @@ function Header() {
                 دانشجو
               </span>
               <ul className="dropdown-menu dropdown-menu-dark shadow">
-                {studentLoginStatus !== "true" && (
+                {studentLoginStatus !== "true" ? (
                   <>
                     <li>
                       <Link className="dropdown-item" to="/student-login">
@@ -102,15 +108,21 @@ function Header() {
                         ثبت نام
                       </Link>
                     </li>
-                    <li><hr className="dropdown-divider" /></li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/student-dashboard">
+                        داشبورد
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/student-logout">
+                        خروج
+                      </Link>
+                    </li>
                   </>
                 )}
-                <li>
-                  <Link className="dropdown-item" to="/student-dashboard">داشبورد</Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/student-logout">خروج</Link>
-                </li>
               </ul>
             </li>
           </ul>
@@ -134,4 +146,3 @@ function Header() {
 }
 
 export default Header;
-

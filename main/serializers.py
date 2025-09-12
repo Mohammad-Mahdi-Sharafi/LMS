@@ -21,7 +21,10 @@ def absolute_media_url(request, field):
 class TeacherSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ["id", "full_name"]
+        fields = [
+            "id",
+            "full_name"
+        ]
 
 
 class TeacherSerializer(serializers.ModelSerializer):
@@ -41,11 +44,18 @@ class TeacherSerializer(serializers.ModelSerializer):
 
 
 class ChapterSerializer(serializers.ModelSerializer):
-    video = serializers.SerializerMethodField()
+    video = serializers.FileField()
 
     class Meta:
         model = Chapter
-        fields = ["id", "title", "description", "video", "remarks"]
+        fields = [
+            "id",
+            "course",
+            "title",
+            "description",
+            "video",
+            "remarks"
+        ]
 
     def get_video(self, obj):
         request = self.context.get("request")
@@ -55,13 +65,19 @@ class ChapterSerializer(serializers.ModelSerializer):
 class CourseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CourseCategory
-        fields = ["id", "title", "description"]
+        fields = [
+            "id",
+            "title",
+            "description"
+        ]
 
 
 class CourseListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for lists and teacher course list pages."""
-    teacher = TeacherSummarySerializer(read_only=True)
-    featured_image = serializers.SerializerMethodField()
+    teacher = serializers.PrimaryKeyRelatedField(
+        queryset=Teacher.objects.all()
+    )
+    featured_image = serializers.ImageField()
 
     class Meta:
         model = Course
@@ -84,7 +100,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     """Full serializer used on course detail endpoint (contains chapters, tech_list and related courses)."""
     teacher = TeacherSummarySerializer(read_only=True)
     course_chapters = ChapterSerializer(many=True, read_only=True)
-    featured_image = serializers.SerializerMethodField()
+    featured_image = serializers.ImageField()
     tech_list = serializers.SerializerMethodField()
     related_courses = serializers.SerializerMethodField()
     total_enrolled_students = serializers.SerializerMethodField()

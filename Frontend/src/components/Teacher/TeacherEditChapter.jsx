@@ -2,6 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import TeacherSidebar from "./TeacherSidebar.jsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
@@ -32,7 +33,7 @@ function TeacherEditChapter() {
     };
 
     useEffect(() => {
-        document.title = "Teacher Edit Chapter"; // don’t change
+        document.title = "Teacher Edit Chapter";
         axios
             .get(`${baseUrl}/chapter-detail/${chapter_id}`, {
                 headers: {
@@ -42,8 +43,12 @@ function TeacherEditChapter() {
             .then((response) => {
                 setChapterData(response.data);
             })
-            .catch((error) => {
-                console.error("Error fetching chapter:", error);
+            .catch(() => {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطا",
+                    text: "مشکلی در دریافت اطلاعات فصل رخ داد",
+                });
             });
     }, [chapter_id]);
 
@@ -66,10 +71,22 @@ function TeacherEditChapter() {
                 },
             })
             .then(() => {
-                navigate(`/teacher-all-chapters/${course_id}`);
+                Swal.fire({
+                    icon: "success",
+                    title: "موفقیت",
+                    text: "فصل با موفقیت ویرایش شد",
+                    timer: 2000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    navigate(`/teacher-all-chapters/${course_id}`);
+                });
             })
-            .catch((error) => {
-                console.error("Error updating chapter:", error);
+            .catch(() => {
+                Swal.fire({
+                    icon: "error",
+                    title: "خطا",
+                    text: "ویرایش فصل انجام نشد، لطفاً دوباره تلاش کنید",
+                });
             });
     };
 
@@ -77,9 +94,9 @@ function TeacherEditChapter() {
         if (!chapterData.video || chapterData.video instanceof File) return null;
 
         const fileUrl = chapterData.video.url || chapterData.video;
-        const ext = fileUrl.split('.').pop().toLowerCase();
+        const ext = fileUrl.split(".").pop().toLowerCase();
 
-        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+        if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
             return (
                 <img
                     src={fileUrl}
@@ -88,7 +105,7 @@ function TeacherEditChapter() {
                     style={{maxWidth: "220px"}}
                 />
             );
-        } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
+        } else if (["mp4", "webm", "ogg"].includes(ext)) {
             return (
                 <video
                     controls

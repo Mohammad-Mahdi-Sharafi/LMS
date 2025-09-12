@@ -96,6 +96,7 @@ function StudentRecommendedCourses() {
                                         </thead>
                                         <tbody>
                                             {courseData.map((course) => (
+
                                                 <tr key={course.id}>
                                                     <td style={{ width: "120px" }}>
                                                         <img
@@ -115,6 +116,7 @@ function StudentRecommendedCourses() {
                                                             to={`/teacher-detail/${course.teacher.id}`}
                                                             className="text-decoration-none fw-medium"
                                                         >
+                                                            {console.log(course)}
                                                             {course.teacher.full_name}
                                                         </Link>
                                                     </td>

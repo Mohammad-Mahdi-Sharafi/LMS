@@ -1,7 +1,8 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import TeacherSidebar from "./TeacherSidebar.jsx";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
@@ -25,6 +26,7 @@ function TeacherAddCourses() {
                 headers: {
                     Authorization:
                         "Token 03fb9ac36c3db0a9fb6b03dd9852440c18982ccf",
+                    "Content-Type": "multipart/form-data",
                 },
             })
             .then((response) => {
@@ -57,8 +59,11 @@ function TeacherAddCourses() {
         _formData.append("teacher", teacherId);
         _formData.append("title", courseData.courseTitle);
         _formData.append("description", courseData.courseDescription);
-        _formData.append("featured_image", courseData.courseImage);
         _formData.append("technologies", courseData.remarks);
+
+        if (courseData.courseImage instanceof File) {
+            _formData.append("featured_image", courseData.courseImage);
+        }
 
         try {
             axios
@@ -70,7 +75,25 @@ function TeacherAddCourses() {
                     },
                 })
                 .then(() => {
-                    navigate("/teacher-my-courses");
+                    Swal.fire({
+                        icon: "success",
+                        title: "دوره با موفقیت ایجاد شد!",
+                        text: "اکنون می‌توانید دوره را در لیست دوره‌های خود مشاهده کنید.",
+                        confirmButtonText: "باشه",
+                        confirmButtonColor: "#198754",
+                    }).then(() => {
+                        navigate("/teacher-my-courses");
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "خطا در ایجاد دوره",
+                        text: "لطفاً اطلاعات وارد شده را بررسی کنید و دوباره تلاش کنید.",
+                        confirmButtonText: "باشه",
+                        confirmButtonColor: "#dc3545",
+                    });
                 });
         } catch (error) {
             console.log(error);
@@ -82,7 +105,7 @@ function TeacherAddCourses() {
             <div className="row">
                 {/* Sidebar */}
                 <aside className="col-md-3 mb-4">
-                    <TeacherSidebar/>
+                    <TeacherSidebar />
                 </aside>
 
                 {/* Form Section */}
@@ -95,10 +118,7 @@ function TeacherAddCourses() {
                             <form onSubmit={formSubmit}>
                                 {/* Category */}
                                 <div className="mb-3">
-                                    <label
-                                        htmlFor="category"
-                                        className="form-label fw-semibold"
-                                    >
+                                    <label htmlFor="category" className="form-label fw-semibold">
                                         دسته‌بندی
                                     </label>
                                     <select
@@ -121,10 +141,7 @@ function TeacherAddCourses() {
 
                                 {/* Title */}
                                 <div className="mb-3">
-                                    <label
-                                        htmlFor="courseTitle"
-                                        className="form-label fw-semibold"
-                                    >
+                                    <label htmlFor="courseTitle" className="form-label fw-semibold">
                                         عنوان
                                     </label>
                                     <input
@@ -157,10 +174,7 @@ function TeacherAddCourses() {
 
                                 {/* Course Image */}
                                 <div className="mb-3">
-                                    <label
-                                        htmlFor="courseImage"
-                                        className="form-label fw-semibold"
-                                    >
+                                    <label htmlFor="courseImage" className="form-label fw-semibold">
                                         عکس دوره
                                     </label>
                                     <input
@@ -174,10 +188,7 @@ function TeacherAddCourses() {
 
                                 {/* Technologies */}
                                 <div className="mb-3">
-                                    <label
-                                        htmlFor="remarks"
-                                        className="form-label fw-semibold"
-                                    >
+                                    <label htmlFor="remarks" className="form-label fw-semibold">
                                         تکنولوژی‌ها
                                     </label>
                                     <textarea
@@ -209,5 +220,3 @@ function TeacherAddCourses() {
 }
 
 export default TeacherAddCourses;
-
-

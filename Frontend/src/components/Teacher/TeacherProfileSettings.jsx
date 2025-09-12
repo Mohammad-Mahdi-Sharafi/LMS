@@ -239,5 +239,3 @@ function TeacherProfileSettings() {
 }
 
 export default TeacherProfileSettings;
-
-

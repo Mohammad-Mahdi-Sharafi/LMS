@@ -2,6 +2,8 @@ import Header from "./Header";
 import Home from "./Home";
 import Footer from "./Footer";
 import About from "./About";
+import Contact from "./Contact";
+import FAQ from "./FAQ";
 import CourseDetail from "./CourseDetail";
 import TeacherDetail from "./TeacherDetail";
 import StudentRegister from "./Student/StudentRegister";
@@ -33,53 +35,57 @@ import TeacherProfileSettings from "./Teacher/TeacherProfileSettings";
 import TeacherLogout from "./Teacher/TeacherLogout";
 import AllCourses from "./AllCourses";
 import PopularlCourses from "./PopularCourses";
-import PopularlTeachers from "./PopularTeachers";
+import PopularlTeachers from "./Teachers.jsx";
 import CategoryCourses from "./CategoryCourses";
-import {Routes as Switch, Route} from "react-router-dom";
+import { Routes as Switch, Route } from "react-router-dom";
 
 function Main() {
     return (
-        <>
-            <Header/>
-            <Switch>
-                <Route path="/" element={<Home/>}/>
-                <Route path="/about" element={<About/>}/>
-                <Route path="/detail/:course_id" element={<CourseDetail/>}/>
-                <Route path="/teacher-detail/:teacher_id" element={<TeacherDetail/>}/>
-                <Route path="/student-login" element={<StudentLogin/>}/>
-                <Route path="/student-logout" element={<StudentLogout/>}/>
-                <Route path="/student-register" element={<StudentRegister/>}/>
-                <Route path="/student-dashboard" element={<StudentDashboard/>}/>
-                <Route path="/student-my-courses" element={<StudentMyCourses/>}/>
-                <Route path="/student-favorite-courses" element={<StudentFavoriteCourses/>}/>
-                <Route path="/student-recommended-courses" element={<StudentRecommendedCourses/>}/>
-                <Route path="/student-show-assignment" element={<StudentAssignments/>}/>
-                <Route path="/student-profile-settings" element={<StudentProfileSettings/>}/>
-                <Route path="/student-change-password" element={<StudentChangePassword/>}/>
-                <Route path="/teacher-login" element={<TeacherLogin/>}/>
-                <Route path="/teacher-register" element={<TeacherRegister/>}/>
-                <Route path="/teacher-dashboard" element={<TeacherDashboard/>}/>
-                <Route path="/teacher-change-password" element={<TeacherChangePassword/>}/>
-                <Route path="/teacher-my-courses" element={<TeacherMyCourses/>}/>
-                <Route path="/teacher-add-courses" element={<TeacherAddCourses/>}/>
-                <Route path="/teacher-enrolled-students/:course_id" element={<TeacherEnrolledStudents/>}/>
-                <Route path="/teacher-edit-course/:course_id" element={<TeacherEditCourses/>}/>
-                <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters/>}/>
-                <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters/>}/>
-                <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter/>}/>
-                <Route path="/teacher-student-list" element={<TeacherStudentList/>}/>
-                <Route path="/teacher-add-assignment/:teacher_id/:student_id" element={<TeacherAddAssignment/>}/>
-                <Route path="/teacher-show-assignment/:teacher_id/:student_id" element={<TeacherShowAssignment/>}/>
-                <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses/>}/>
-                <Route path="/teacher-profile-settings" element={<TeacherProfileSettings/>}/>
-                <Route path="/teacher-logout" element={<TeacherLogout/>}/>
-                <Route path="/all-courses" element={<AllCourses/>}/>
-                <Route path="/popular-courses" element={<PopularlCourses/>}/>
-                <Route path="/popular-teachers" element={<PopularlTeachers/>}/>
-                <Route path="/category/:category_slug" element={<CategoryCourses/>}/>
-            </Switch>
-            <Footer/>
-        </>
+        <div className="d-flex flex-column min-vh-100">
+            <Header />
+            <main className="flex-grow-1">
+                <Switch>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/detail/:course_id" element={<CourseDetail />} />
+                    <Route path="/teacher-detail/:teacher_id" element={<TeacherDetail />} />
+                    <Route path="/student-login" element={<StudentLogin />} />
+                    <Route path="/student-logout" element={<StudentLogout />} />
+                    <Route path="/student-register" element={<StudentRegister />} />
+                    <Route path="/student-dashboard" element={<StudentDashboard />} />
+                    <Route path="/student-my-courses" element={<StudentMyCourses />} />
+                    <Route path="/student-favorite-courses" element={<StudentFavoriteCourses />} />
+                    <Route path="/student-recommended-courses" element={<StudentRecommendedCourses />} />
+                    <Route path="/student-show-assignment" element={<StudentAssignments />} />
+                    <Route path="/student-profile-settings" element={<StudentProfileSettings />} />
+                    <Route path="/student-change-password" element={<StudentChangePassword />} />
+                    <Route path="/teacher-login" element={<TeacherLogin />} />
+                    <Route path="/teacher-register" element={<TeacherRegister />} />
+                    <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+                    <Route path="/teacher-change-password" element={<TeacherChangePassword />} />
+                    <Route path="/teacher-my-courses" element={<TeacherMyCourses />} />
+                    <Route path="/teacher-add-courses" element={<TeacherAddCourses />} />
+                    <Route path="/teacher-enrolled-students/:course_id" element={<TeacherEnrolledStudents />} />
+                    <Route path="/teacher-edit-course/:course_id" element={<TeacherEditCourses />} />
+                    <Route path="/teacher-add-chapters/:course_id" element={<TeacherAddChapters />} />
+                    <Route path="/teacher-all-chapters/:course_id" element={<TeacherAllChapters />} />
+                    <Route path="/teacher-edit-chapter/:chapter_id" element={<TeacherEditChapter />} />
+                    <Route path="/teacher-student-list" element={<TeacherStudentList />} />
+                    <Route path="/teacher-add-assignment/:teacher_id/:student_id" element={<TeacherAddAssignment />} />
+                    <Route path="/teacher-show-assignment/:teacher_id/:student_id" element={<TeacherShowAssignment />} />
+                    <Route path="/teacher-skill-courses/:skill_name/:teacher_id" element={<TeacherSkillCourses />} />
+                    <Route path="/teacher-profile-settings" element={<TeacherProfileSettings />} />
+                    <Route path="/teacher-logout" element={<TeacherLogout />} />
+                    <Route path="/all-courses" element={<AllCourses />} />
+                    <Route path="/popular-courses" element={<PopularlCourses />} />
+                    <Route path="/popular-teachers" element={<PopularlTeachers />} />
+                    <Route path="/category/:category_slug" element={<CategoryCourses />} />
+                </Switch>
+            </main>
+            <Footer />
+        </div>
     );
 }
 

@@ -32,4 +32,5 @@ urlpatterns = [
     path(route="update-assignment/<int:pk>", view=views.StudentUpdateAssignment.as_view(), name="update-assignment"),
     path(route="student/fetch-all-notifications/<int:student_id>/", view=views.NotificationListCreate.as_view(), name="student-fetch-all-notifications"),
     path(route="save-notification/", view=views.NotificationListCreate.as_view(), name="save-notification"),
+    path(route="student-testimonial/", view=views.CourseRatingListCreate.as_view(), name="student-testimonial"),
 ]

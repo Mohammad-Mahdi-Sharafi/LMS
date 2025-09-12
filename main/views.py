@@ -196,10 +196,11 @@ class CourseRatingListCreate(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        course_id = self.kwargs['course_id']
-        course = Course.objects.get(id=course_id)
-        return CourseRating.objects.filter(course=course)
-
+        if "course_id" in self.kwargs:
+            course_id = self.kwargs['course_id']
+            course = Course.objects.get(id=course_id)
+            return CourseRating.objects.filter(course=course)
+        return CourseRating.objects.filter(course__isnull=False).order_by('-rating')
 
 @csrf_exempt
 def fetch_rating_status(request, student_id, course_id):

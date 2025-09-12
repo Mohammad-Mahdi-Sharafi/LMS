@@ -1,5 +1,6 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const baseUrl = "http://127.0.0.1:8000/api";
 
@@ -12,6 +13,7 @@ function TeacherRegister() {
         phone_number: "",
         skills: "",
         status: "",
+        profile_image: null,
     });
 
     const handleChange = (event) => {
@@ -35,6 +37,10 @@ function TeacherRegister() {
         teacherFormData.append("phone_number", teacherData.phone_number);
         teacherFormData.append("skills", teacherData.skills);
 
+        if (teacherData.profile_image instanceof File) {
+            teacherFormData.append("profile_image", teacherData.profile_image);
+        }
+
         try {
             axios
                 .post(baseUrl + "/teacher", teacherFormData, {
@@ -44,10 +50,39 @@ function TeacherRegister() {
                     },
                 })
                 .then((response) => {
-                    localStorage.setItem("teacherLoginStatus", "true")
+                    console.log(response.data);
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "ثبت نام موفقیت‌آمیز بود!",
+                        text: "اکنون می‌توانید وارد حساب مدرس شوید.",
+                        confirmButtonText: "باشه",
+                        confirmButtonColor: "#198754",
+                    }).then(() => {
+                        window.location.href = "/teacher-login";
+                    });
+
+                    setTeacherData({
+                        full_name: "",
+                        email: "",
+                        password: "",
+                        qualification: "",
+                        phone_number: "",
+                        skills: "",
+                        status: "success",
+                        profile_image: null,
+                    });
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response?.data || error);
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "خطا در ثبت نام",
+                        text: "لطفاً اطلاعات وارد شده را بررسی کنید و دوباره تلاش کنید.",
+                        confirmButtonText: "باشه",
+                        confirmButtonColor: "#dc3545",
+                    });
                 });
         } catch (error) {
             console.log(error);
@@ -75,6 +110,7 @@ function TeacherRegister() {
                                     </label>
                                     <input
                                         onChange={handleChange}
+                                        value={teacherData.full_name}
                                         type="text"
                                         className="form-control form-control-lg"
                                         id="full_name"
@@ -90,6 +126,7 @@ function TeacherRegister() {
                                     </label>
                                     <input
                                         onChange={handleChange}
+                                        value={teacherData.email}
                                         type="email"
                                         className="form-control form-control-lg"
                                         id="email"
@@ -105,6 +142,7 @@ function TeacherRegister() {
                                     </label>
                                     <input
                                         onChange={handleChange}
+                                        value={teacherData.password}
                                         type="password"
                                         className="form-control form-control-lg"
                                         id="password"
@@ -120,6 +158,7 @@ function TeacherRegister() {
                                     </label>
                                     <input
                                         onChange={handleChange}
+                                        value={teacherData.qualification}
                                         type="text"
                                         className="form-control form-control-lg"
                                         id="qualification"
@@ -134,6 +173,7 @@ function TeacherRegister() {
                                     </label>
                                     <input
                                         onChange={handleChange}
+                                        value={teacherData.phone_number}
                                         type="text"
                                         className="form-control form-control-lg"
                                         id="phone_number"
@@ -148,13 +188,16 @@ function TeacherRegister() {
                                     </label>
                                     <textarea
                                         onChange={handleChange}
+                                        value={teacherData.skills}
                                         className="form-control form-control-lg"
                                         id="skills"
                                         name="skills"
                                         rows="3"
                                         placeholder="مهارت‌های خود را وارد کنید (مثال: React, Python, تدریس)"
                                     ></textarea>
-                                    <div className="form-text">می‌توانید چند مهارت را با ویرگول جدا کنید</div>
+                                    <div className="form-text">
+                                        می‌توانید چند مهارت را با ویرگول جدا کنید
+                                    </div>
                                 </div>
 
                                 <div className="d-grid">
